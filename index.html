@@ -4,48 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PetChain — 대한민국 온체인 펫 케어 생태계</title>
-  <meta name="description" content="Pet ID, Medical NFT, 전국 펫 평판 지도, M2E" />
-  
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
-  
   <style>
     :root {
       --bg: #05070f;
       --accent: #7cdbff;
       --accent2: #c084fc;
-      --text: #f0f4ff;
       --muted: #a3b0d0;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
     body {
+      margin: 0; padding: 0;
       font-family: 'Inter', system-ui, -apple-system, "Noto Sans KR", sans-serif;
       background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
+      color: #f0f4ff;
     }
-    .container { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
 
     nav {
       position: fixed; top: 0; width: 100%; z-index: 1000;
       background: rgba(5,7,15,0.95); backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(124,219,255,0.15);
+      border-bottom: 1px solid rgba(124,219,255,0.2);
     }
     .nav-inner { min-height: 80px; display: flex; align-items: center; justify-content: space-between; }
 
-    .hero {
-      height: 100vh; min-height: 800px; display: flex; align-items: center;
-      background: radial-gradient(circle at 30% 40%, rgba(124,219,255,0.16), transparent);
-    }
-    h1 { font-size: clamp(48px, 7.5vw, 88px); line-height: 1.05; letter-spacing: -0.04em; }
+    .hero { padding: 160px 0 100px; text-align: center; }
+    h1 { font-size: clamp(52px, 8vw, 90px); line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 24px; }
 
-    #map { width: 100%; height: 720px; border-radius: 24px; }
-    .map-wrapper { position: relative; border-radius: 28px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.6); }
+    #map { width: 100%; height: 680px; border-radius: 24px; }
+    .map-wrapper { position: relative; margin: 40px 0; border-radius: 28px; overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,0.6); }
 
     .map-ui {
       position: absolute; top: 30px; left: 30px; z-index: 10;
-      background: rgba(10,15,35,0.95); padding: 22px; border-radius: 20px;
-      border: 1px solid rgba(124,219,255,0.25);
+      background: rgba(10,15,35,0.95); padding: 24px; border-radius: 20px;
+      border: 1px solid rgba(124,219,255,0.3);
     }
 
     .cards {
@@ -57,17 +49,15 @@
       background: rgba(13,18,40,0.85);
       border: 1px solid rgba(124,219,255,0.15);
       border-radius: 24px;
-      padding: 38px;
+      padding: 36px;
     }
     .btn {
       padding: 18px 52px;
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      background: linear-gradient(90deg, #7cdbff, #c084fc);
       color: #05070f;
       font-weight: 700;
       border-radius: 9999px;
       font-size: 18px;
-      border: none;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -75,40 +65,34 @@
 
   <nav>
     <div class="container nav-inner">
-      <div style="font-size:26px; font-weight:800; display:flex; align-items:center; gap:12px;">
-        <div style="width:50px;height:50px;background:linear-gradient(135deg,#7cdbff,#c084fc);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#05070f;font-size:26px;">P</div>
+      <div style="font-size:28px;font-weight:800;display:flex;align-items:center;gap:14px;">
+        <div style="background:linear-gradient(135deg,#7cdbff,#c084fc);width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#05070f;font-size:28px;">P</div>
         PetChain
       </div>
-      <div style="color:var(--accent);font-weight:600;">전국 온체인 펫 평판 지도</div>
+      <div style="color:#7cdbff;font-weight:600;">전국 온체인 펫 평판 지도</div>
     </div>
   </nav>
 
-  <!-- HERO -->
   <section class="hero">
     <div class="container">
-      <h1 style="text-align:center">반려동물의 신뢰를<br>온체인으로 새롭게 정의하다</h1>
-      <p style="text-align:center; font-size:21px; max-width:720px; margin:32px auto; color:var(--muted);">
-        Pet ID(SBT) · Medical Record NFT · 전국 실시간 펫 평판 지도 · M2E<br>
-        대한민국 반려인과 수의사를 위한 완전한 생태계
+      <h1>반려동물의 모든 순간을<br>온체인으로 신뢰하다</h1>
+      <p style="font-size:21px;max-width:720px;margin:0 auto 40px;color:var(--muted);">
+        Pet ID(SBT) · Medical NFT · 전국 실시간 펫 평판 지도 · M2E · 검증된 마켓플레이스
       </p>
-      <div style="text-align:center">
-        <button onclick="document.getElementById('map-section').scrollIntoView({behavior:'smooth'})" class="btn">지도 보기</button>
-      </div>
+      <button onclick="document.getElementById('map-section').scrollIntoView({behavior:'smooth'})" class="btn">지도 보기</button>
     </div>
   </section>
 
   <!-- MAP -->
-  <section id="map-section" style="padding:60px 0">
+  <section id="map-section">
     <div class="container">
-      <h2 style="text-align:center; margin-bottom:20px; font-size:38px;">🇰🇷 대한민국 온체인 펫 평판 지도</h2>
-      <p style="text-align:center; color:var(--muted); margin-bottom:40px;">실제 방문 + NFT 인증된 리뷰만 표시</p>
-      
+      <h2 style="text-align:center;margin-bottom:20px;">대한민국 실시간 펫 평판 지도</h2>
       <div class="map-wrapper">
         <div id="map"></div>
         
         <div class="map-ui">
-          <h3 style="margin-bottom:16px">필터</h3>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:15px">
+          <h3>필터</h3>
+          <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:15px">
             <label><input type="checkbox" checked> 🏥 병원</label>
             <label><input type="checkbox" checked> 🏨 호텔</label>
             <label><input type="checkbox" checked> 🐾 유치원</label>
@@ -119,74 +103,80 @@
     </div>
   </section>
 
-  <!-- 핵심 기능 -->
-  <section style="background:#0a0f24">
+  <!-- 핵심 내용 -->
+  <section>
     <div class="container">
-      <h2 style="text-align:center; font-size:42px; margin-bottom:60px;">PetChain 핵심</h2>
       <div class="cards">
         <div class="card">
-          <h3>① Pet ID (SBT)</h3>
-          <p>양도 불가능한 반려동물 평생 신원. 혈통, 출생, 의료 이력이 영구 저장됩니다.</p>
+          <h3>Pet ID (SBT)</h3>
+          <p>양도 불가능한 반려동물 평생 신원. 혈통, 출생, 의료 이력이 온체인에 영구 기록됩니다.</p>
         </div>
         <div class="card">
-          <h3>② Medical NFT</h3>
-          <p>수의사 EMR 연동 발행. 해외여행·검역 시 QR 하나로 즉시 인증.</p>
+          <h3>Medical Record NFT</h3>
+          <p>수의사 EMR 연동 발행. 해외 검역·입국 시 QR 하나로 즉시 증명 가능.</p>
         </div>
         <div class="card">
-          <h3>③ 전국 펫 평판 지도</h3>
-          <p>병원, 호텔, 유치원, 카페 등 모든 장소를 실제 사용자 인증 평판으로 연결.</p>
+          <h3>전국 펫 평판 지도</h3>
+          <p>병원, 호텔, 유치원, 카페, 그루밍샵 등 모든 장소를 실제 방문 인증 평판으로 연결.</p>
         </div>
         <div class="card">
-          <h3>④ M2E + 마켓플레이스</h3>
-          <p>산책하며 토큰 적립, 검증된 도그워커·펫시터 안전 매칭.</p>
+          <h3>M2E + Marketplace</h3>
+          <p>산책으로 토큰 적립, 검증된 도그워커·펫시터 매칭, 에스크로 안전 결제.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <footer style="padding:80px 0; text-align:center; color:var(--muted); border-top:1px solid rgba(255,255,255,0.1);">
-    <div class="container">
-      © 2026 PetChain — Global On-chain Pet Care Ecosystem<br>
-      Pet ID • Medical NFT • On-chain Reputation • Utility Token
-    </div>
-  </footer>
-
   <script>
+    // 더 상세한 OSM 스타일 사용
     const map = new maplibregl.Map({
       container: 'map',
-      style: 'https://tiles.openstreetmaps.org/styles/basic.json',
+      style: {
+        version: 8,
+        sources: {
+          'osm': {
+            type: 'raster',
+            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+            tileSize: 256,
+            attribution: '© OpenStreetMap'
+          }
+        },
+        layers: [{
+          id: 'osm',
+          type: 'raster',
+          source: 'osm'
+        }]
+      },
       center: [127.0, 37.55],
       zoom: 11.8,
-      pitch: 45,
-      bearing: -10
+      pitch: 40
     });
 
     map.on('load', () => {
       const places = [
-        {lng:127.0276, lat:37.498, name:"코엑스 펫호텔", type:"hotel", score:4.9, nft:true},
-        {lng:127.112, lat:37.402, name:"분당펫메디컬", type:"hospital", score:4.95, nft:true},
-        {lng:126.978, lat:37.566, name:"강남중앙동물병원", type:"hospital", score:4.98, nft:true},
-        {lng:126.91, lat:37.55, name:"망원펫유치원", type:"daycare", score:4.85},
-        {lng:129.085, lat:35.18, name:"해운대펫카페", type:"cafe", score:4.7},
+        {lng:127.0276, lat:37.498, name:"코엑스 펫호텔", score:"4.9", nft:true},
+        {lng:127.112, lat:37.402, name:"분당펫메디컬", score:"4.95", nft:true},
+        {lng:126.978, lat:37.566, name:"강남중앙동물병원", score:"4.98", nft:true},
+        {lng:126.91, lat:37.55, name:"망원펫유치원", score:"4.85"},
       ];
 
       places.forEach(p => {
         const el = document.createElement('div');
-        el.style.width = "40px";
-        el.style.height = "40px";
-        el.style.background = p.nft ? "#34d399" : "#7cdbff";
-        el.style.border = "4px solid white";
-        el.style.borderRadius = "50%";
-        el.style.boxShadow = "0 8px 20px rgba(0,0,0,0.5)";
-        el.style.display = "flex";
-        el.style.alignItems = "center";
-        el.style.justifyContent = "center";
-        el.style.fontSize = "22px";
-        el.innerHTML = p.type === "hospital" ? "🏥" : p.type === "hotel" ? "🏨" : p.type === "daycare" ? "🐾" : "☕";
+        el.style.width = '42px';
+        el.style.height = '42px';
+        el.style.background = p.nft ? '#34d399' : '#7cdbff';
+        el.style.border = '4px solid white';
+        el.style.borderRadius = '50%';
+        el.style.display = 'flex';
+        el.style.alignItems = 'center';
+        el.style.justifyContent = 'center';
+        el.style.fontSize = '22px';
+        el.style.boxShadow = '0 10px 25px rgba(0,0,0,0.5)';
+        el.innerHTML = '🏠';
 
         new maplibregl.Marker({element: el})
           .setLngLat([p.lng, p.lat])
-          .setPopup(new maplibregl.Popup().setHTML(`<b>${p.name}</b><br>평점 ${p.score} ${p.nft ? '• NFT 인증' : ''}`))
+          .setPopup(new maplibregl.Popup().setHTML(`<b>${p.name}</b><br>평점 ${p.score}`))
           .addTo(map);
       });
     });
