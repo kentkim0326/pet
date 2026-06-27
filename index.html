@@ -3,61 +3,48 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PetChain — 대한민국 온체인 펫 케어 생태계</title>
+  <title>PetChain — 공공데이터 + 온체인 펫 생태계</title>
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #05070f;
-      --accent: #7cdbff;
-      --accent2: #c084fc;
-      --muted: #a3b0d0;
-    }
+    :root { --bg:#05070f; --accent:#7cdbff; --accent2:#c084fc; --muted:#a3b0d0; }
     body {
-      margin: 0; padding: 0;
+      margin:0; padding:0;
       font-family: 'Inter', system-ui, -apple-system, "Noto Sans KR", sans-serif;
       background: var(--bg);
       color: #f0f4ff;
     }
     .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
 
-    nav {
-      position: fixed; top: 0; width: 100%; z-index: 1000;
-      background: rgba(5,7,15,0.95); backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(124,219,255,0.2);
-    }
-    .nav-inner { min-height: 80px; display: flex; align-items: center; justify-content: space-between; }
+    nav { position:fixed; top:0; width:100%; z-index:1000; background:rgba(5,7,15,0.95); backdrop-filter:blur(20px); border-bottom:1px solid rgba(124,219,255,0.2); }
+    .nav-inner { min-height:80px; display:flex; align-items:center; justify-content:space-between; }
 
-    .hero { padding: 160px 0 100px; text-align: center; }
-    h1 { font-size: clamp(52px, 8vw, 90px); line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 24px; }
+    .hero { padding:160px 0 100px; text-align:center; }
+    h1 { font-size:clamp(52px,8vw,90px); line-height:1.05; letter-spacing:-0.04em; margin-bottom:24px; }
 
-    #map { width: 100%; height: 680px; border-radius: 24px; }
-    .map-wrapper { position: relative; margin: 40px 0; border-radius: 28px; overflow: hidden; box-shadow: 0 30px 70px rgba(0,0,0,0.6); }
+    #map { width:100%; height:720px; border-radius:24px; }
+    .map-wrapper { position:relative; margin:40px 0; border-radius:28px; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.6); }
 
     .map-ui {
-      position: absolute; top: 30px; left: 30px; z-index: 10;
-      background: rgba(10,15,35,0.95); padding: 24px; border-radius: 20px;
-      border: 1px solid rgba(124,219,255,0.3);
+      position:absolute; top:30px; left:30px; z-index:10;
+      background:rgba(10,15,35,0.95); padding:24px; border-radius:20px;
+      border:1px solid rgba(124,219,255,0.3);
     }
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-      gap: 28px;
-    }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(360px,1fr)); gap:28px; }
     .card {
-      background: rgba(13,18,40,0.85);
-      border: 1px solid rgba(124,219,255,0.15);
-      border-radius: 24px;
-      padding: 36px;
+      background:rgba(13,18,40,0.85);
+      border:1px solid rgba(124,219,255,0.15);
+      border-radius:24px;
+      padding:36px;
     }
     .btn {
-      padding: 18px 52px;
-      background: linear-gradient(90deg, #7cdbff, #c084fc);
-      color: #05070f;
-      font-weight: 700;
-      border-radius: 9999px;
-      font-size: 18px;
+      padding:18px 52px;
+      background:linear-gradient(90deg,#7cdbff,#c084fc);
+      color:#05070f;
+      font-weight:700;
+      border-radius:9999px;
+      font-size:18px;
     }
   </style>
 </head>
@@ -69,64 +56,62 @@
         <div style="background:linear-gradient(135deg,#7cdbff,#c084fc);width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#05070f;font-size:28px;">P</div>
         PetChain
       </div>
-      <div style="color:#7cdbff;font-weight:600;">공공데이터 + 온체인 펫 생태계</div>
+      <div style="color:#7cdbff;font-weight:600;">공공데이터 기반 온체인 펫 지도</div>
     </div>
   </nav>
 
   <section class="hero">
     <div class="container">
-      <h1>대한민국 공공데이터와<br>온체인을 연결합니다</h1>
+      <h1>공공데이터 × 온체인<br>반려동물 신뢰 플랫폼</h1>
       <p style="font-size:21px;max-width:720px;margin:0 auto 40px;color:var(--muted);">
-        동물병원·반려동물 등록 현황·입양 정보 등 공공데이터를 기반으로<br>
-        Pet ID(SBT) · Medical NFT · 실시간 평판 지도를 구축합니다
+        행정안전부 동물병원 표준데이터 · 지자체 반려동물 등록 현황 · 입양 정보 등을<br>
+        온체인에 연결하여 투명하고 신뢰할 수 있는 펫 생태계를 만듭니다
       </p>
-      <button onclick="document.getElementById('map-section').scrollIntoView({behavior:'smooth'})" class="btn">공공데이터 기반 지도 보기</button>
+      <button onclick="document.getElementById('map-section').scrollIntoView({behavior:'smooth'})" class="btn">공공데이터 지도 보기</button>
     </div>
   </section>
 
   <!-- MAP -->
   <section id="map-section">
     <div class="container">
-      <h2 style="text-align:center;margin-bottom:20px;">전국 동물병원 + 반려동물 등록 현황 지도</h2>
+      <h2 style="text-align:center;margin-bottom:16px;">전국 동물병원 + 반려동물 등록 현황</h2>
       <p style="text-align:center;color:var(--muted);margin-bottom:30px;">
-        공공데이터(행정안전부 동물병원 표준데이터 + 지자체 등록현황) 연동
+        행정안전부 · 서울시 · 지자체 공공데이터 실시간 연동
       </p>
       <div class="map-wrapper">
         <div id="map"></div>
         
         <div class="map-ui">
-          <h3>실시간 필터</h3>
+          <h3>공공데이터 기반</h3>
           <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:15px">
             <label><input type="checkbox" checked> 🏥 동물병원</label>
-            <label><input type="checkbox" checked> 🏨 펫호텔</label>
-            <label><input type="checkbox" checked> 🐾 유치원</label>
-            <label><input type="checkbox" checked> ☕ 카페</label>
+            <label><input type="checkbox" checked> 📍 등록 밀집 지역</label>
+            <label><input type="checkbox" checked> 🐾 입양 가능 동물</label>
           </div>
-          <small style="display:block;margin-top:20px;color:#34d399;">● 공공데이터 기반</small>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 핵심 기능 -->
+  <!-- 기능 -->
   <section>
     <div class="container">
       <div class="cards">
         <div class="card">
-          <h3>🏥 공공데이터 연동</h3>
-          <p>행정안전부 동물병원 표준데이터 + 지자체 반려동물 등록 현황 실시간 반영</p>
+          <h3>🏥 행정안전부 동물병원 데이터</h3>
+          <p>전국 동물병원 위치·정보를 공공데이터로 불러와 지도에 표시</p>
         </div>
         <div class="card">
-          <h3>🆔 Pet ID (SBT)</h3>
-          <p>공공 등록 정보를 기반으로 한 반려동물 평생 온체인 신원</p>
+          <h3>📊 지자체 반려동물 등록 현황</h3>
+          <p>동별·구별 등록 마릿수, 품종 통계 등을 온체인 평판과 결합</p>
         </div>
         <div class="card">
-          <h3>📋 Medical NFT</h3>
-          <p>동물병원 EMR 연동으로 발행되는 검역·의료 증명서</p>
+          <h3>🆔 Pet ID + Medical NFT</h3>
+          <p>공공 등록 정보를 기반으로 블록체인 신원 및 의료 기록 발행</p>
         </div>
         <div class="card">
-          <h3>🔍 투명한 평판 시스템</h3>
-          <p>실제 방문 인증 + 공공데이터 기반 신뢰도 높은 평판 지도</p>
+          <h3>🔍 투명한 평판 지도</h3>
+          <p>공공데이터 + 실제 사용자 인증 리뷰로 신뢰도 높은 정보 제공</p>
         </div>
       </div>
     </div>
@@ -141,8 +126,7 @@
           'osm': {
             type: 'raster',
             tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-            tileSize: 256,
-            attribution: '© OpenStreetMap'
+            tileSize: 256
           }
         },
         layers: [{ id: 'osm', type: 'raster', source: 'osm' }]
@@ -153,15 +137,14 @@
     });
 
     map.on('load', () => {
-      // 공공데이터 기반 예시 마커 (실제로는 API 호출로 대체)
-      const publicDataPlaces = [
-        {lng:127.0276, lat:37.498, name:"코엑스 펫호텔", type:"hotel", note:"공공 등록 시설"},
-        {lng:127.112, lat:37.402, name:"분당펫메디컬센터", type:"hospital", note:"행정안전부 데이터"},
-        {lng:126.978, lat:37.566, name:"강남중앙동물병원", type:"hospital", note:"동물병원 표준데이터"},
-        {lng:126.91, lat:37.55, name:"망원펫유치원", type:"daycare", note:"지자체 등록"},
+      const publicPlaces = [
+        {lng:127.0276, lat:37.498, name:"코엑스 펫호텔", note:"서울시 등록 시설"},
+        {lng:127.112, lat:37.402, name:"분당펫메디컬", note:"행정안전부 동물병원 데이터"},
+        {lng:126.978, lat:37.566, name:"강남중앙동물병원", note:"공공데이터 연동"},
+        {lng:126.91, lat:37.55, name:"망원펫유치원", note:"지자체 등록현황"},
       ];
 
-      publicDataPlaces.forEach(p => {
+      publicPlaces.forEach(p => {
         const el = document.createElement('div');
         el.style.width = '42px';
         el.style.height = '42px';
@@ -177,10 +160,7 @@
 
         new maplibregl.Marker({element: el})
           .setLngLat([p.lng, p.lat])
-          .setPopup(new maplibregl.Popup().setHTML(`
-            <strong>${p.name}</strong><br>
-            <small>${p.note}</small>
-          `))
+          .setPopup(new maplibregl.Popup().setHTML(`<strong>${p.name}</strong><br><small>${p.note}</small>`))
           .addTo(map);
       });
     });
