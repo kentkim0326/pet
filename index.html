@@ -69,66 +69,70 @@
         <div style="background:linear-gradient(135deg,#7cdbff,#c084fc);width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:#05070f;font-size:28px;">P</div>
         PetChain
       </div>
-      <div style="color:#7cdbff;font-weight:600;">전국 온체인 펫 평판 지도</div>
+      <div style="color:#7cdbff;font-weight:600;">공공데이터 + 온체인 펫 생태계</div>
     </div>
   </nav>
 
   <section class="hero">
     <div class="container">
-      <h1>반려동물의 모든 순간을<br>온체인으로 신뢰하다</h1>
+      <h1>대한민국 공공데이터와<br>온체인을 연결합니다</h1>
       <p style="font-size:21px;max-width:720px;margin:0 auto 40px;color:var(--muted);">
-        Pet ID(SBT) · Medical NFT · 전국 실시간 펫 평판 지도 · M2E · 검증된 마켓플레이스
+        동물병원·반려동물 등록 현황·입양 정보 등 공공데이터를 기반으로<br>
+        Pet ID(SBT) · Medical NFT · 실시간 평판 지도를 구축합니다
       </p>
-      <button onclick="document.getElementById('map-section').scrollIntoView({behavior:'smooth'})" class="btn">지도 보기</button>
+      <button onclick="document.getElementById('map-section').scrollIntoView({behavior:'smooth'})" class="btn">공공데이터 기반 지도 보기</button>
     </div>
   </section>
 
   <!-- MAP -->
   <section id="map-section">
     <div class="container">
-      <h2 style="text-align:center;margin-bottom:20px;">대한민국 실시간 펫 평판 지도</h2>
+      <h2 style="text-align:center;margin-bottom:20px;">전국 동물병원 + 반려동물 등록 현황 지도</h2>
+      <p style="text-align:center;color:var(--muted);margin-bottom:30px;">
+        공공데이터(행정안전부 동물병원 표준데이터 + 지자체 등록현황) 연동
+      </p>
       <div class="map-wrapper">
         <div id="map"></div>
         
         <div class="map-ui">
-          <h3>필터</h3>
+          <h3>실시간 필터</h3>
           <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:15px">
-            <label><input type="checkbox" checked> 🏥 병원</label>
-            <label><input type="checkbox" checked> 🏨 호텔</label>
+            <label><input type="checkbox" checked> 🏥 동물병원</label>
+            <label><input type="checkbox" checked> 🏨 펫호텔</label>
             <label><input type="checkbox" checked> 🐾 유치원</label>
             <label><input type="checkbox" checked> ☕ 카페</label>
           </div>
+          <small style="display:block;margin-top:20px;color:#34d399;">● 공공데이터 기반</small>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 핵심 내용 -->
+  <!-- 핵심 기능 -->
   <section>
     <div class="container">
       <div class="cards">
         <div class="card">
-          <h3>Pet ID (SBT)</h3>
-          <p>양도 불가능한 반려동물 평생 신원. 혈통, 출생, 의료 이력이 온체인에 영구 기록됩니다.</p>
+          <h3>🏥 공공데이터 연동</h3>
+          <p>행정안전부 동물병원 표준데이터 + 지자체 반려동물 등록 현황 실시간 반영</p>
         </div>
         <div class="card">
-          <h3>Medical Record NFT</h3>
-          <p>수의사 EMR 연동 발행. 해외 검역·입국 시 QR 하나로 즉시 증명 가능.</p>
+          <h3>🆔 Pet ID (SBT)</h3>
+          <p>공공 등록 정보를 기반으로 한 반려동물 평생 온체인 신원</p>
         </div>
         <div class="card">
-          <h3>전국 펫 평판 지도</h3>
-          <p>병원, 호텔, 유치원, 카페, 그루밍샵 등 모든 장소를 실제 방문 인증 평판으로 연결.</p>
+          <h3>📋 Medical NFT</h3>
+          <p>동물병원 EMR 연동으로 발행되는 검역·의료 증명서</p>
         </div>
         <div class="card">
-          <h3>M2E + Marketplace</h3>
-          <p>산책으로 토큰 적립, 검증된 도그워커·펫시터 매칭, 에스크로 안전 결제.</p>
+          <h3>🔍 투명한 평판 시스템</h3>
+          <p>실제 방문 인증 + 공공데이터 기반 신뢰도 높은 평판 지도</p>
         </div>
       </div>
     </div>
   </section>
 
   <script>
-    // 더 상세한 OSM 스타일 사용
     const map = new maplibregl.Map({
       container: 'map',
       style: {
@@ -141,42 +145,42 @@
             attribution: '© OpenStreetMap'
           }
         },
-        layers: [{
-          id: 'osm',
-          type: 'raster',
-          source: 'osm'
-        }]
+        layers: [{ id: 'osm', type: 'raster', source: 'osm' }]
       },
       center: [127.0, 37.55],
-      zoom: 11.8,
+      zoom: 11.5,
       pitch: 40
     });
 
     map.on('load', () => {
-      const places = [
-        {lng:127.0276, lat:37.498, name:"코엑스 펫호텔", score:"4.9", nft:true},
-        {lng:127.112, lat:37.402, name:"분당펫메디컬", score:"4.95", nft:true},
-        {lng:126.978, lat:37.566, name:"강남중앙동물병원", score:"4.98", nft:true},
-        {lng:126.91, lat:37.55, name:"망원펫유치원", score:"4.85"},
+      // 공공데이터 기반 예시 마커 (실제로는 API 호출로 대체)
+      const publicDataPlaces = [
+        {lng:127.0276, lat:37.498, name:"코엑스 펫호텔", type:"hotel", note:"공공 등록 시설"},
+        {lng:127.112, lat:37.402, name:"분당펫메디컬센터", type:"hospital", note:"행정안전부 데이터"},
+        {lng:126.978, lat:37.566, name:"강남중앙동물병원", type:"hospital", note:"동물병원 표준데이터"},
+        {lng:126.91, lat:37.55, name:"망원펫유치원", type:"daycare", note:"지자체 등록"},
       ];
 
-      places.forEach(p => {
+      publicDataPlaces.forEach(p => {
         const el = document.createElement('div');
         el.style.width = '42px';
         el.style.height = '42px';
-        el.style.background = p.nft ? '#34d399' : '#7cdbff';
+        el.style.background = '#34d399';
         el.style.border = '4px solid white';
         el.style.borderRadius = '50%';
+        el.style.boxShadow = '0 8px 20px rgba(0,0,0,0.5)';
         el.style.display = 'flex';
         el.style.alignItems = 'center';
         el.style.justifyContent = 'center';
-        el.style.fontSize = '22px';
-        el.style.boxShadow = '0 10px 25px rgba(0,0,0,0.5)';
-        el.innerHTML = '🏠';
+        el.style.fontSize = '20px';
+        el.innerHTML = '🏥';
 
         new maplibregl.Marker({element: el})
           .setLngLat([p.lng, p.lat])
-          .setPopup(new maplibregl.Popup().setHTML(`<b>${p.name}</b><br>평점 ${p.score}`))
+          .setPopup(new maplibregl.Popup().setHTML(`
+            <strong>${p.name}</strong><br>
+            <small>${p.note}</small>
+          `))
           .addTo(map);
       });
     });
