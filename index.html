@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PetChain — 대한민국 온체인 펫 케어 생태계</title>
-  <meta name="description" content="전국 반려동물 병원, 호텔, 유치원, 카페를 온체인 평판으로 연결하는 PetChain. Pet ID(SBT), Medical NFT, M2E, 실시간 펫 맵." />
+  <title>PetChain — 대한민국 온체인 펫 평판 지도</title>
+  <meta name="description" content="전국 반려동물 병원, 호텔, 유치원, 카페를 온체인 평판으로 연결" />
   
   <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
   <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
@@ -12,321 +12,167 @@
   <style>
     :root {
       --bg: #05070f;
-      --panel: rgba(13, 18, 40, 0.85);
       --accent: #7cdbff;
       --accent2: #c084fc;
-      --text: #f0f4ff;
-      --muted: #a3b0d0;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       font-family: 'Inter', system-ui, -apple-system, "Noto Sans KR", sans-serif;
       background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
-      overflow-x: hidden;
+      color: #f0f4ff;
     }
     .container { max-width: 1320px; margin: 0 auto; padding: 0 28px; }
 
-    /* NAV */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 1000;
-      background: rgba(5,7,15,0.95);
-      backdrop-filter: blur(24px);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(5,7,15,0.96); backdrop-filter: blur(24px);
       border-bottom: 1px solid rgba(124,219,255,0.15);
     }
-    .nav-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 84px;
-    }
+    .nav-inner { min-height: 84px; display: flex; align-items: center; justify-content: space-between; }
+
     .logo {
-      font-size: 28px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: white;
+      font-size: 28px; font-weight: 800; display: flex; align-items: center; gap: 12px;
     }
     .logo-dot {
-      width: 52px; height: 52px;
-      background: linear-gradient(135deg, #7cdbff, #c084fc);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      color: #05070f;
-      font-weight: 900;
+      width: 52px; height: 52px; background: linear-gradient(135deg, #7cdbff, #c084fc);
+      border-radius: 16px; display: flex; align-items: center; justify-content: center;
+      font-size: 24px; color: #05070f; font-weight: 900;
     }
 
-    /* HERO */
-    .hero {
-      height: 100vh;
-      min-height: 820px;
-      display: flex;
-      align-items: center;
-      position: relative;
-      background: radial-gradient(circle at 40% 30%, rgba(124,219,255,0.18), transparent 70%);
-    }
-    .hero-content h1 {
-      font-size: clamp(52px, 8vw, 92px);
-      line-height: 1.05;
-      letter-spacing: -0.045em;
-      margin-bottom: 28px;
-    }
-    .hero-content p {
-      font-size: 22px;
-      max-width: 680px;
-      color: var(--muted);
-      margin-bottom: 48px;
-    }
+    .hero { height: 100vh; min-height: 820px; display: flex; align-items: center; position: relative; }
+    .hero h1 { font-size: clamp(54px, 8.5vw, 96px); line-height: 1.05; letter-spacing: -0.05em; }
 
-    /* MAP */
-    .map-wrapper {
-      position: relative;
-      border-radius: 32px;
-      overflow: hidden;
-      box-shadow: 0 30px 70px rgba(0,0,0,0.6);
-      border: 1px solid rgba(124,219,255,0.2);
+    #map { width: 100%; height: 760px; border-radius: 28px; }
+    .map-wrapper { 
+      border-radius: 32px; overflow: hidden; 
+      box-shadow: 0 30px 80px rgba(0,0,0,0.65); 
+      border: 1px solid rgba(124,219,255,0.25);
     }
-    #map { width: 100%; height: 720px; }
 
     .map-ui {
-      position: absolute;
-      top: 32px;
-      left: 32px;
-      background: rgba(10,14,35,0.96);
-      padding: 24px;
-      border-radius: 20px;
-      border: 1px solid rgba(124,219,255,0.25);
-      z-index: 10;
-      min-width: 280px;
+      position: absolute; top: 32px; left: 32px; z-index: 10;
+      background: rgba(10,14,35,0.97); padding: 24px; border-radius: 20px;
+      border: 1px solid rgba(124,219,255,0.3); min-width: 290px;
     }
 
-    /* SECTIONS */
-    section { padding: 110px 0; }
-    .section-header {
-      text-align: center;
-      margin-bottom: 70px;
-    }
-    .section-header h2 {
-      font-size: 42px;
-      margin-bottom: 16px;
-    }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-      gap: 32px;
-    }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 32px; }
     .card {
-      background: var(--panel);
-      border: 1px solid rgba(124,219,255,0.15);
-      border-radius: 28px;
-      padding: 42px 36px;
-      transition: all 0.4s;
+      background: rgba(13,18,40,0.9); border: 1px solid rgba(124,219,255,0.15);
+      border-radius: 28px; padding: 42px 36px;
     }
-    .card:hover {
-      transform: translateY(-16px);
-      border-color: var(--accent);
-    }
-
     .btn {
-      padding: 18px 48px;
-      font-size: 18px;
-      font-weight: 700;
+      padding: 18px 48px; font-size: 18px; font-weight: 700;
       background: linear-gradient(90deg, #7cdbff, #c084fc);
-      color: #05070f;
-      border: none;
-      border-radius: 9999px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .btn:hover {
-      transform: scale(1.06);
-      box-shadow: 0 20px 40px rgba(124,219,255,0.3);
-    }
-
-    footer {
-      padding: 100px 0 60px;
-      text-align: center;
-      color: var(--muted);
-      border-top: 1px solid rgba(255,255,255,0.08);
+      color: #05070f; border: none; border-radius: 9999px; cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
   <nav>
     <div class="container nav-inner">
       <div class="logo">
         <div class="logo-dot">P</div>
         PetChain
       </div>
-      <div style="font-weight:600; color:var(--accent);">전국 온체인 펫 평판 지도</div>
+      <div style="color:#7cdbff; font-weight:600;">전국 온체인 펫 평판 지도</div>
     </div>
   </nav>
 
-  <!-- HERO -->
   <section class="hero">
-    <div class="container" style="max-width:1100px">
-      <div class="hero-content">
-        <h1>반려동물의 삶을<br>온체인으로 보호하다</h1>
-        <p>
-          대한민국 최초의 실시간 온체인 펫 평판 지도<br>
-          병원 · 호텔 · 유치원 · 카페 · 그루밍까지, 실제 방문과 NFT 인증으로만 쌓이는 신뢰
-        </p>
-        <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap">
-          <button onclick="document.getElementById('map-section').scrollIntoView({behavior:'smooth'})" class="btn">
-            전국 지도 보기
-          </button>
-          <a href="#" class="btn" style="background:transparent; border:2px solid var(--accent); color:white">백서 다운로드</a>
-        </div>
-      </div>
+    <div class="container">
+      <h1 style="text-align:center">반려동물의 모든 공간을<br>신뢰로 연결합니다</h1>
     </div>
   </section>
 
-  <!-- INTERACTIVE MAP -->
-  <section id="map-section">
+  <!-- 고해상도 MAP -->
+  <section style="padding:40px 0">
     <div class="container">
-      <div class="section-header">
-        <h2>🇰🇷 대한민국 실시간 펫 맵</h2>
-        <p style="color:var(--muted); font-size:19px">실제 사용자 + 의료 NFT 인증 평판만 표시됩니다</p>
-      </div>
-      
       <div class="map-wrapper">
         <div id="map"></div>
-        
+
         <div class="map-ui">
-          <h3 style="margin-bottom:18px">📍 장소 필터</h3>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:15.5px">
-            <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" checked> 🏥 병원</label>
-            <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" checked> 🏨 호텔</label>
-            <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" checked> 🐾 유치원</label>
-            <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" checked> ☕ 카페</label>
+          <h3>📍 실시간 장소 필터</h3>
+          <div style="margin:18px 0; display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:15px">
+            <label><input type="checkbox" checked> 🏥 병원</label>
+            <label><input type="checkbox" checked> 🏨 호텔</label>
+            <label><input type="checkbox" checked> 🐾 유치원</label>
+            <label><input type="checkbox" checked> ☕ 카페</label>
+            <label><input type="checkbox" checked> ✂️ 그루밍</label>
           </div>
-          <div style="margin-top:24px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1); font-size:14px">
-            <span style="color:#34d399">● NFT 인증</span> &nbsp;&nbsp; 
-            <span style="color:#fbbf24">★ 평점 4.8+</span>
-          </div>
+          <small style="color:#34d399">● NFT 인증 장소</small>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- FEATURES -->
+  <!-- 나머지 섹션 -->
   <section>
     <div class="container">
-      <div class="section-header">
-        <h2>PetChain 핵심 기능</h2>
-      </div>
       <div class="cards">
         <div class="card">
-          <h3>1. Pet ID (SBT)</h3>
-          <p>반려동물의 평생 불변 신원. 혈통, 의료 기록, 산책 이력이 영구적으로 연결됩니다.</p>
+          <h3>Pet ID (SBT)</h3>
+          <p>반려동물 평생 신원. 혈통·의료·산책 이력이 온체인에 안전하게 기록됩니다.</p>
         </div>
         <div class="card">
-          <h3>2. Medical Record NFT</h3>
-          <p>수의사 EMR 연동 발행. 해외 검역·입국 시 QR 하나로 즉시 인증.</p>
+          <h3>Medical NFT</h3>
+          <p>수의사 EMR 연동 발행. 해외 검역 시 QR 하나로 즉시 증명.</p>
         </div>
         <div class="card">
-          <h3>3. 온체인 평판 시스템</h3>
-          <p>실제 방문 인증된 사용자만 리뷰 작성 가능. 가짜 리뷰 완전 차단.</p>
-        </div>
-        <div class="card">
-          <h3>4. M2E + 마켓플레이스</h3>
-          <p>산책하며 토큰 적립, 검증된 도그워커·펫시터 안전 매칭.</p>
+          <h3>온체인 평판 지도</h3>
+          <p>실제 방문 + NFT 인증된 리뷰만 표시. 가짜 리뷰 완전 차단.</p>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- TOKENOMICS -->
-  <section style="background:#0a0f24">
-    <div class="container">
-      <div class="section-header">
-        <h2>순수 유틸리티 토큰</h2>
-      </div>
-      <div class="cards">
-        <div class="card">
-          <strong>Earn</strong><br>산책 · 리뷰 · 데이터 기여
-        </div>
-        <div class="card">
-          <strong>Spend</strong><br>매칭 결제 · 가맹점 할인 · 구독
-        </div>
-        <div class="card">
-          <strong>Sustainability</strong><br>수수료 Burn + B2B Buyback
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FINAL CTA -->
-  <section style="text-align:center; padding:140px 0; background:linear-gradient(135deg,#1a2338,#05070f)">
-    <div class="container">
-      <h2 style="font-size:52px; margin-bottom:32px">반려동물의 미래를<br>함께 만들어갑니다</h2>
-      <button onclick="alert('대기자 등록이 완료되었습니다. (데모)')" class="btn" style="font-size:20px; padding:22px 60px">
-        대기자 등록하고 초기 토큰 받기
-      </button>
-      <p style="margin-top:60px; color:var(--muted)">
-        백서 v2.0 · EMR 제휴 · 투자 문의 · 개발자 참여
-      </p>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container">
-      © 2026 PetChain — Global On-chain Pet Care Network<br>
-      <small>Pet ID • Medical NFT • On-chain Reputation Map • Utility Token</small>
-    </div>
-  </footer>
 
   <script>
-    // MapLibre
     const map = new maplibregl.Map({
       container: 'map',
-      style: 'https://demotiles.maplibre.org/style.json',
-      center: [127.0, 37.35],
-      zoom: 7.5,
-      pitch: 48,
-      bearing: -12
+      style: 'https://tiles.openstreetmaps.org/styles/basic.json', // 더 상세한 스타일
+      center: [127.0, 37.55],   // 서울 중심
+      zoom: 11.5,               // 서울 상세 레벨
+      pitch: 45,
+      bearing: -15
     });
 
     map.on('load', () => {
-      const locations = [
-        {lng:126.9784, lat:37.5665, name:"강남펫메디컬", type:"hospital", score:4.95, nft:true},
-        {lng:127.0276, lat:37.498, name:"코엑스 펫호텔", type:"hotel", score:4.82},
-        {lng:126.91, lat:37.55, name:"망원 펫유치원", type:"daycare", score:4.9, nft:true},
-        {lng:129.085, lat:35.18, name:"해운대 펫카페", type:"cafe", score:4.75},
-        {lng:128.6, lat:35.87, name:"대구 중앙동물병원", type:"hospital", score:4.98, nft:true},
+      // 서울 + 주요 도시 마커
+      const places = [
+        {lng:127.0276, lat:37.4980, name:"코엑스 펫호텔", type:"hotel", score:"4.9", nft:true},
+        {lng:127.112, lat:37.402, name:"분당 펫메디컬", type:"hospital", score:"4.95", nft:true},
+        {lng:126.978, lat:37.566, name:"강남 중앙동물병원", type:"hospital", score:"4.98", nft:true},
+        {lng:126.91, lat:37.55, name:"망원 펫유치원", type:"daycare", score:"4.85"},
+        {lng:129.085, lat:35.18, name:"해운대 펫카페", type:"cafe", score:"4.7"},
       ];
 
-      locations.forEach(loc => {
+      places.forEach(place => {
         const el = document.createElement('div');
-        el.style.width = '38px';
-        el.style.height = '38px';
-        el.style.background = loc.nft ? '#34d399' : '#7cdbff';
-        el.style.border = '4px solid white';
+        el.style.width = '42px';
+        el.style.height = '42px';
+        el.style.background = place.nft ? '#34d399' : '#7cdbff';
+        el.style.border = '4px solid #fff';
         el.style.borderRadius = '50%';
-        el.style.boxShadow = '0 8px 20px rgba(0,0,0,0.5)';
+        el.style.boxShadow = '0 10px 25px rgba(0,0,0,0.5)';
         el.style.display = 'flex';
         el.style.alignItems = 'center';
         el.style.justifyContent = 'center';
-        el.style.fontSize = '20px';
-        el.innerHTML = loc.type === 'hospital' ? '🏥' : loc.type === 'hotel' ? '🏨' : loc.type === 'daycare' ? '🐾' : '☕';
+        el.style.fontSize = '22px';
+        el.innerHTML = place.type === 'hospital' ? '🏥' : 
+                       place.type === 'hotel' ? '🏨' : 
+                       place.type === 'daycare' ? '🐾' : '☕';
 
-        new maplibregl.Marker({ element: el })
-          .setLngLat([loc.lng, loc.lat])
-          .setPopup(new maplibregl.Popup({offset: 25}).setHTML(`
-            <strong>${loc.name}</strong><br>
-            평점 ${loc.score} ${loc.nft ? '• NFT 인증' : ''}
+        new maplibregl.Marker({element: el})
+          .setLngLat([place.lng, place.lat])
+          .setPopup(new maplibregl.Popup({offset: 30}).setHTML(`
+            <strong>${place.name}</strong><br>
+            평점 <b>${place.score}</b> ${place.nft ? '<span style="color:#34d399">• NFT 인증</span>' : ''}
           `))
           .addTo(map);
       });
+
+      // 서울 중심으로 부드럽게 이동
+      map.flyTo({ center: [127.0, 37.55], zoom: 11.8, duration: 1800 });
     });
   </script>
 </body>
