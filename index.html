@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>펫메이트 — 반려동물 커뮤니티 & 매칭</title>
+  <title>펫메이트 — 반려동물 커뮤니티 & 매칭 플랫폼</title>
+  <meta name="description" content="우리 동네 동물병원·펫호텔·도그워커·일반 호스트 매칭. 종별·연령대별 채팅방과 지역 기반 평판 커뮤니티."/>
+  <meta property="og:title" content="펫메이트 — 반려동물 커뮤니티 & 매칭"/>
+  <meta property="og:description" content="검증된 리뷰, 실시간 채팅, 3D 펫 지도. 반려동물 라이프의 모든 것."/>
+  <meta property="og:type" content="website"/>
+  <meta name="theme-color" content="#0b0d14"/>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>"/>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet"/>
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css" rel="stylesheet"/>
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js"></script>
@@ -13,154 +19,96 @@
       --border:rgba(255,255,255,0.08);
       --accent:#4ade80; --accent2:#60a5fa; --accent3:#f472b6;
       --text:#f0f2f8; --muted:#7b849a; --warm:#fbbf24;
-      --nav-h:52px; --ticker-h:34px; --tab-h:44px;
-      --bottom-h:60px;
+      --nav-h:52px; --ticker-h:34px; --tab-h:44px; --bottom-h:60px;
     }
     *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     html,body{height:100%;overflow:hidden;font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);}
+    button{font-family:'Noto Sans KR',sans-serif;}
 
-    /* ── TOP NAV (mobile-first) ── */
-    .top-nav{
-      position:fixed;top:0;left:0;right:0;z-index:200;
-      height:var(--nav-h);
-      background:rgba(11,13,20,0.97);backdrop-filter:blur(20px);
-      border-bottom:1px solid var(--border);
-      display:flex;align-items:center;padding:0 14px;gap:10px;
-    }
-    .logo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:17px;letter-spacing:-.5px;flex-shrink:0;}
+    .top-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);
+      background:rgba(11,13,20,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;padding:0 14px;gap:10px;}
+    .logo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:17px;letter-spacing:-.5px;flex-shrink:0;cursor:pointer;}
     .logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
-    .nav-btns{display:flex;gap:4px;flex:1;justify-content:flex-end;}
-    .nav-btn{padding:6px 10px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Noto Sans KR',sans-serif;transition:all .15s;}
+    .search-box{flex:1;max-width:300px;position:relative;}
+    .search-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:7px 12px 7px 30px;color:var(--text);font-size:12px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border .15s;}
+    .search-inp:focus{border-color:var(--accent);}
+    .search-ico{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;opacity:.5;}
+    .search-results{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:10px;max-height:260px;overflow-y:auto;display:none;box-shadow:0 16px 40px rgba(0,0,0,.6);}
+    .search-results.show{display:block;}
+    .sr-item{padding:10px 12px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+    .sr-item:last-child{border-bottom:none;}
+    .sr-item:hover{background:var(--surface2);}
+    .nav-btns{display:flex;gap:4px;margin-left:auto;}
+    .nav-btn{padding:6px 10px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
     .nav-btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
     .nav-btn-primary{background:var(--accent);color:#000;}
 
-    /* ── TICKER ── */
-    .ticker{
-      position:fixed;top:var(--nav-h);left:0;right:0;z-index:199;
-      height:var(--ticker-h);background:var(--surface);
-      border-bottom:1px solid var(--border);
-      display:flex;align-items:center;overflow:hidden;
-    }
-    .ticker-label{flex-shrink:0;background:var(--accent);color:#000;font-size:10px;font-weight:700;padding:0 10px;height:100%;display:flex;align-items:center;letter-spacing:.5px;white-space:nowrap;}
+    .ticker{position:fixed;top:var(--nav-h);left:0;right:0;z-index:199;height:var(--ticker-h);
+      background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;overflow:hidden;}
+    .ticker-label{flex-shrink:0;background:var(--accent);color:#000;font-size:10px;font-weight:700;padding:0 10px;height:100%;display:flex;align-items:center;white-space:nowrap;}
     .ticker-track{display:flex;animation:ticker 65s linear infinite;will-change:transform;}
     .ticker-track:hover{animation-play-state:paused;}
     @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-    .ticker-item{white-space:nowrap;padding:0 28px;font-size:12px;color:var(--muted);}
+    .ticker-item{white-space:nowrap;padding:0 28px;font-size:12px;color:var(--muted);cursor:pointer;}
+    .ticker-item:hover{color:var(--text);}
     .ticker-item b{color:var(--accent2);margin-right:6px;font-weight:600;}
 
-    /* ── TOP CONTENT TABS (below ticker) ── */
-    .content-tabs{
-      position:fixed;top:calc(var(--nav-h) + var(--ticker-h));left:0;right:0;z-index:198;
-      height:var(--tab-h);background:var(--bg);
-      border-bottom:1px solid var(--border);
-      display:flex;overflow-x:auto;scrollbar-width:none;
-    }
+    .content-tabs{position:fixed;top:calc(var(--nav-h) + var(--ticker-h));left:0;right:0;z-index:198;height:var(--tab-h);
+      background:var(--bg);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;}
     .content-tabs::-webkit-scrollbar{display:none;}
-    .c-tab{
-      flex:1;min-width:70px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:12px;font-weight:500;color:var(--muted);
-      cursor:pointer;border-bottom:2px solid transparent;
-      white-space:nowrap;padding:0 4px;transition:all .15s;
-    }
+    .c-tab{flex:1;min-width:70px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;}
     .c-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
 
-    /* ── MAIN AREA ── */
-    .main-area{
-      position:fixed;
-      top:calc(var(--nav-h) + var(--ticker-h) + var(--tab-h));
-      left:0;right:0;
-      bottom:var(--bottom-h);
-      overflow:hidden;
-    }
+    .main-area{position:fixed;top:calc(var(--nav-h) + var(--ticker-h) + var(--tab-h));left:0;right:0;bottom:var(--bottom-h);overflow:hidden;}
     .tab-panel{display:none;width:100%;height:100%;}
     .tab-panel.active{display:flex;flex-direction:column;}
 
-    /* ── MAP ── */
     #map{width:100%;flex:1;}
-    .map-filters{
-      position:absolute;
-      top:calc(var(--nav-h) + var(--ticker-h) + var(--tab-h) + 10px);
-      left:10px;z-index:100;
-      display:flex;flex-direction:column;gap:5px;
-    }
-    .mf-btn{
-      background:rgba(11,13,20,.9);backdrop-filter:blur(10px);
-      border:1px solid var(--border);color:var(--text);
-      padding:6px 11px;border-radius:7px;font-size:11px;
-      cursor:pointer;font-family:'Noto Sans KR',sans-serif;
-      transition:all .15s;display:flex;align-items:center;gap:5px;
-      white-space:nowrap;
-    }
+    .map-filters{position:absolute;top:calc(var(--nav-h) + var(--ticker-h) + var(--tab-h) + 10px);left:10px;z-index:100;display:flex;flex-direction:column;gap:5px;}
+    .mf-btn{background:rgba(11,13,20,.9);backdrop-filter:blur(10px);border:1px solid var(--border);color:var(--text);padding:6px 11px;border-radius:7px;font-size:11px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;white-space:nowrap;}
     .mf-btn.on{border-color:var(--accent);color:var(--accent);}
-    .map-view-btns{
-      position:absolute;
-      top:calc(var(--nav-h) + var(--ticker-h) + var(--tab-h) + 10px);
-      right:10px;z-index:100;
-      display:flex;flex-direction:column;gap:5px;
-    }
-    .mv-btn{
-      background:rgba(11,13,20,.9);backdrop-filter:blur(10px);
-      border:1px solid var(--border);color:var(--text);
-      width:36px;height:36px;border-radius:8px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:14px;cursor:pointer;transition:all .15s;
-    }
+    .map-view-btns{position:absolute;top:calc(var(--nav-h) + var(--ticker-h) + var(--tab-h) + 10px);right:10px;z-index:100;display:flex;flex-direction:column;gap:5px;}
+    .mv-btn{background:rgba(11,13,20,.9);backdrop-filter:blur(10px);border:1px solid var(--border);color:var(--text);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all .15s;}
     .mv-btn:hover{border-color:var(--accent2);color:var(--accent2);}
-    .map-legend{
-      position:absolute;
-      bottom:calc(var(--bottom-h) + 10px);
-      left:10px;z-index:100;
-      background:rgba(11,13,20,.9);backdrop-filter:blur(10px);
-      border:1px solid var(--border);border-radius:10px;
-      padding:10px 12px;font-size:10px;
-    }
+    .mv-btn.locating{animation:pulse 1s infinite;}
+    @keyframes pulse{50%{opacity:.4;}}
+    .map-legend{position:absolute;bottom:calc(var(--bottom-h) + 10px);left:10px;z-index:100;background:rgba(11,13,20,.9);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:10px;}
     .leg-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;color:var(--muted);}
     .leg-row:last-child{margin-bottom:0;}
     .leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+    .map-count{position:absolute;bottom:calc(var(--bottom-h) + 10px);right:10px;z-index:100;background:rgba(11,13,20,.9);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:11px;color:var(--muted);}
+    .map-count b{color:var(--accent);}
 
-    /* ── CHAT ── */
     .chat-panel-inner{display:flex;width:100%;height:100%;}
-    .chat-sidebar{
-      width:200px;flex-shrink:0;
-      border-right:1px solid var(--border);
-      overflow-y:auto;padding:10px 8px;
-    }
+    .chat-sidebar{width:200px;flex-shrink:0;border-right:1px solid var(--border);overflow-y:auto;padding:10px 8px;}
     .chat-sidebar::-webkit-scrollbar{width:2px;}
     .chat-sidebar::-webkit-scrollbar-thumb{background:var(--border);}
     .chat-main{flex:1;display:flex;flex-direction:column;min-width:0;}
-    @media(max-width:480px){
-      .chat-sidebar{width:160px;}
-    }
-    .cs-label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:0 4px;margin-bottom:5px;margin-top:10px;}
+    @media(max-width:480px){.chat-sidebar{width:150px;}}
+    .cs-label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;padding:0 4px;margin:10px 0 5px;}
     .cs-label:first-child{margin-top:0;}
-    .room-btn{
-      display:flex;align-items:center;gap:7px;
-      padding:7px 6px;border-radius:8px;cursor:pointer;
-      transition:all .12s;margin-bottom:1px;
-    }
+    .room-btn{display:flex;align-items:center;gap:7px;padding:7px 6px;border-radius:8px;cursor:pointer;transition:all .12s;margin-bottom:1px;}
     .room-btn:hover,.room-btn.active{background:var(--surface2);}
     .room-btn.active .rb-name{color:var(--text);font-weight:600;}
     .rb-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
     .rb-name{font-size:11px;color:var(--muted);flex:1;}
     .rb-cnt{font-size:9px;color:var(--accent);background:rgba(74,222,128,.1);padding:1px 5px;border-radius:10px;font-weight:700;}
-    .age-btn{
-      display:flex;align-items:center;gap:6px;
-      padding:6px 6px;border-radius:8px;cursor:pointer;
-      transition:all .12s;margin-bottom:1px;
-    }
+    .age-btn{display:flex;align-items:center;gap:6px;padding:6px;border-radius:8px;cursor:pointer;transition:all .12s;margin-bottom:1px;}
     .age-btn:hover,.age-btn.active{background:var(--surface2);}
     .age-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap;}
 
-    /* chat messages area */
     .chat-hdr{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;}
     .chat-hdr-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
     .chat-hdr-info h3{font-size:13px;font-weight:700;}
     .chat-hdr-info p{font-size:10px;color:var(--muted);}
+    .typing-dot{display:inline-block;animation:blink 1.2s infinite;}
+    @keyframes blink{50%{opacity:.2;}}
     .chat-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;}
     .chat-msgs::-webkit-scrollbar{width:2px;}
     .chat-msgs::-webkit-scrollbar-thumb{background:var(--border);}
-    .msg{display:flex;gap:7px;max-width:88%;}
+    .msg{display:flex;gap:7px;max-width:88%;animation:msgIn .25s ease;}
+    @keyframes msgIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
     .msg.mine{align-self:flex-end;flex-direction:row-reverse;}
     .msg-av{width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px;}
     .msg-nm{font-size:10px;color:var(--muted);margin-bottom:2px;}
@@ -168,18 +116,13 @@
     .msg.mine .msg-bub{background:rgba(74,222,128,.13);border:1px solid rgba(74,222,128,.2);}
     .msg-t{font-size:9px;color:var(--muted);margin-top:2px;text-align:right;}
     .chat-inp-row{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:7px;align-items:flex-end;flex-shrink:0;}
-    .chat-inp{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;resize:none;max-height:80px;outline:none;transition:border .15s;}
+    .chat-inp{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;resize:none;max-height:80px;outline:none;}
     .chat-inp:focus{border-color:var(--accent);}
     .chat-send{width:36px;height:36px;border-radius:9px;background:var(--accent);color:#000;border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
-    /* ── MATCHING ── */
     .scroll-panel{overflow-y:auto;padding:14px;width:100%;height:100%;}
     .scroll-panel::-webkit-scrollbar{width:3px;}
     .scroll-panel::-webkit-scrollbar-thumb{background:var(--border);}
-    .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-    .sec-hdr h2{font-size:16px;font-weight:700;}
-    .see-all{font-size:11px;color:var(--muted);cursor:pointer;}
-    .see-all:hover{color:var(--accent);}
     .match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
     @media(max-width:400px){.match-grid{grid-template-columns:1fr;}}
     .match-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px;cursor:pointer;transition:all .15s;}
@@ -191,9 +134,11 @@
     .mc-r{color:var(--warm);font-size:10px;font-weight:600;}
     .mc-v{font-size:9px;color:var(--accent);background:rgba(74,222,128,.1);padding:1px 6px;border-radius:10px;}
     .mc-p{margin-left:auto;font-size:11px;font-weight:700;color:var(--accent2);}
+    .quick-row{display:flex;gap:7px;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+    .q-btn{flex:1;padding:8px 4px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;border:none;text-align:center;transition:all .15s;}
+    .q-btn.on{outline:2px solid currentColor;}
 
-    /* ── COMMUNITY ── */
-    .post-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .13s;}
+    .post-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:10px;transition:all .13s;}
     .post-card:hover{border-color:rgba(255,255,255,.12);}
     .pt{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
     .p-av{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;font-size:16px;}
@@ -204,74 +149,74 @@
     .p-title{font-size:13px;font-weight:700;margin-bottom:4px;line-height:1.4;}
     .p-body{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:10px;}
     .p-acts{display:flex;gap:12px;font-size:10px;color:var(--muted);}
-    .p-act{display:flex;align-items:center;gap:3px;cursor:pointer;}
+    .p-act{display:flex;align-items:center;gap:3px;cursor:pointer;user-select:none;}
     .p-act:hover{color:var(--accent);}
+    .p-act.liked{color:var(--accent3);}
 
-    /* ── BOTTOM NAV ── */
-    .bottom-nav{
-      position:fixed;bottom:0;left:0;right:0;z-index:200;
-      height:var(--bottom-h);
-      background:rgba(11,13,20,0.97);backdrop-filter:blur(20px);
-      border-top:1px solid var(--border);
-      display:flex;align-items:center;
-      padding:0 8px;padding-bottom:env(safe-area-inset-bottom,0px);
-    }
-    .bn-btn{
-      flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-      gap:3px;cursor:pointer;padding:6px 4px;border-radius:10px;transition:all .15s;
-    }
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;height:var(--bottom-h);
+      background:rgba(11,13,20,0.97);backdrop-filter:blur(20px);border-top:1px solid var(--border);
+      display:flex;align-items:center;padding:0 8px;padding-bottom:env(safe-area-inset-bottom,0px);}
+    .bn-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px 4px;border-radius:10px;transition:all .15s;}
     .bn-btn:hover,.bn-btn.active{background:var(--surface2);}
     .bn-ico{font-size:20px;line-height:1;}
     .bn-label{font-size:9px;color:var(--muted);font-weight:500;white-space:nowrap;}
     .bn-btn.active .bn-label{color:var(--accent);}
 
-    /* MAPBOX POPUP */
+    /* MODAL */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:flex-end;justify-content:center;}
+    .modal-bg.show{display:flex;}
+    @media(min-width:600px){.modal-bg.show{align-items:center;}}
+    .modal{background:var(--surface);border:1px solid var(--border);border-radius:20px 20px 0 0;padding:22px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;animation:slideUp .25s ease;}
+    @media(min-width:600px){.modal{border-radius:20px;}}
+    @keyframes slideUp{from{transform:translateY(40px);opacity:0;}to{transform:none;opacity:1;}}
+    .modal h3{font-size:17px;font-weight:700;margin-bottom:4px;}
+    .modal-sub{font-size:12px;color:var(--muted);margin-bottom:16px;}
+    .modal-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+    .modal-row span:first-child{color:var(--muted);}
+    .modal-btns{display:flex;gap:8px;margin-top:18px;}
+    .modal-btn{flex:1;padding:12px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;border:none;}
+    .write-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;margin-bottom:9px;}
+    .write-inp:focus{border-color:var(--accent);}
+    textarea.write-inp{resize:vertical;min-height:90px;}
+    .toast{position:fixed;bottom:calc(var(--bottom-h) + 16px);left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--accent);color:var(--text);padding:11px 20px;border-radius:12px;font-size:13px;z-index:600;display:none;box-shadow:0 12px 32px rgba(0,0,0,.5);}
+    .toast.show{display:block;animation:msgIn .25s ease;}
+
     .mapboxgl-popup-content{background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:12px!important;padding:13px 15px!important;color:var(--text)!important;font-family:'Noto Sans KR',sans-serif!important;min-width:170px;box-shadow:0 16px 40px rgba(0,0,0,.5)!important;}
     .mapboxgl-popup-tip{border-top-color:var(--surface)!important;border-bottom-color:var(--surface)!important;}
     .pop-name{font-weight:700;font-size:13px;margin-bottom:3px;}
     .pop-type{font-size:9px;font-weight:600;padding:2px 7px;border-radius:10px;display:inline-block;margin-bottom:7px;}
     .pop-meta{font-size:10px;color:var(--muted);margin-bottom:2px;}
     .pop-r{color:var(--warm);font-size:11px;font-weight:700;}
-    .pop-btn{display:block;margin-top:9px;background:var(--accent);color:#000;text-align:center;padding:7px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;width:100%;font-family:'Noto Sans KR',sans-serif;}
-
-    /* quick action btns */
-    .quick-row{display:flex;gap:7px;padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
-    .q-btn{flex:1;padding:8px 4px;border-radius:9px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:'Noto Sans KR',sans-serif;text-align:center;}
+    .pop-btn{display:block;margin-top:9px;background:var(--accent);color:#000;text-align:center;padding:7px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;width:100%;}
   </style>
 </head>
 <body>
 
-<!-- TOP NAV -->
 <div class="top-nav">
-  <div class="logo">
-    <div class="logo-icon">🐾</div>
-    펫메이트
+  <div class="logo" onclick="switchTab('map')"><div class="logo-icon">🐾</div>펫메이트</div>
+  <div class="search-box">
+    <span class="search-ico">🔍</span>
+    <input class="search-inp" id="searchInp" placeholder="병원·워커·호스트 검색" oninput="doSearch(this.value)" onblur="setTimeout(()=>document.getElementById('searchResults').classList.remove('show'),200)"/>
+    <div class="search-results" id="searchResults"></div>
   </div>
   <div class="nav-btns">
-    <button class="nav-btn nav-btn-outline">로그인</button>
-    <button class="nav-btn nav-btn-primary">가입</button>
+    <button class="nav-btn nav-btn-primary" onclick="toast('회원가입은 곧 오픈됩니다! 🐾')">가입</button>
   </div>
 </div>
 
-<!-- TICKER -->
 <div class="ticker">
   <div class="ticker-label">🐾 뉴스</div>
-  <div style="overflow:hidden;flex:1;">
-    <div class="ticker-track" id="tickerTrack"></div>
-  </div>
+  <div style="overflow:hidden;flex:1;"><div class="ticker-track" id="tickerTrack"></div></div>
 </div>
 
-<!-- CONTENT TABS -->
 <div class="content-tabs">
-  <div class="c-tab active" id="ctab-map"       onclick="switchTab('map')">🗺 지도</div>
-  <div class="c-tab"        id="ctab-chat"       onclick="switchTab('chat')">💬 채팅방</div>
-  <div class="c-tab"        id="ctab-matching"   onclick="switchTab('matching')">🤝 매칭</div>
-  <div class="c-tab"        id="ctab-community"  onclick="switchTab('community')">📋 커뮤니티</div>
+  <div class="c-tab active" id="ctab-map" onclick="switchTab('map')">🗺 지도</div>
+  <div class="c-tab" id="ctab-chat" onclick="switchTab('chat')">💬 채팅방</div>
+  <div class="c-tab" id="ctab-matching" onclick="switchTab('matching')">🤝 매칭</div>
+  <div class="c-tab" id="ctab-community" onclick="switchTab('community')">📋 커뮤니티</div>
 </div>
 
-<!-- MAIN AREA -->
 <div class="main-area">
-
   <!-- MAP -->
   <div class="tab-panel active" id="panel-map" style="position:relative;">
     <div id="map"></div>
@@ -283,8 +228,9 @@
       <button class="mf-btn on" onclick="toggleF(this,'host')">🏠 호스트</button>
     </div>
     <div class="map-view-btns">
+      <div class="mv-btn" id="locBtn" onclick="goMyLocation()" title="내 위치">📍</div>
       <div class="mv-btn" onclick="map.easeTo({pitch:55,bearing:-20,duration:700})" title="3D">🏔</div>
-      <div class="mv-btn" onclick="map.easeTo({pitch:0,bearing:0,duration:700})"    title="2D">🗺</div>
+      <div class="mv-btn" onclick="map.easeTo({pitch:0,bearing:0,duration:700})" title="2D">🗺</div>
       <div class="mv-btn" onclick="map.easeTo({zoom:map.getZoom()+1})">＋</div>
       <div class="mv-btn" onclick="map.easeTo({zoom:map.getZoom()-1})">－</div>
     </div>
@@ -295,61 +241,13 @@
       <div class="leg-row"><div class="leg-dot" style="background:#fbbf24"></div>그루밍</div>
       <div class="leg-row"><div class="leg-dot" style="background:#a78bfa"></div>호스트</div>
     </div>
+    <div class="map-count" id="mapCount"></div>
   </div>
 
   <!-- CHAT -->
   <div class="tab-panel" id="panel-chat">
     <div class="chat-panel-inner">
-      <!-- sidebar -->
-      <div class="chat-sidebar">
-        <div class="cs-label">종별</div>
-        <div class="room-btn active" onclick="enterRoom(this,'강아지','🐶','#4ade80','2,143명 온라인')">
-          <div class="rb-ico" style="background:rgba(74,222,128,.12)">🐶</div>
-          <span class="rb-name">강아지</span><span class="rb-cnt">2.1k</span>
-        </div>
-        <div class="room-btn" onclick="enterRoom(this,'고양이','🐱','#60a5fa','1,842명 온라인')">
-          <div class="rb-ico" style="background:rgba(96,165,250,.12)">🐱</div>
-          <span class="rb-name">고양이</span><span class="rb-cnt">1.8k</span>
-        </div>
-        <div class="room-btn" onclick="enterRoom(this,'파충류','🦎','#a78bfa','342명 온라인')">
-          <div class="rb-ico" style="background:rgba(167,139,250,.12)">🦎</div>
-          <span class="rb-name">파충류</span><span class="rb-cnt">342</span>
-        </div>
-        <div class="room-btn" onclick="enterRoom(this,'조류','🐦','#f472b6','218명 온라인')">
-          <div class="rb-ico" style="background:rgba(244,114,182,.12)">🐦</div>
-          <span class="rb-name">조류</span><span class="rb-cnt">218</span>
-        </div>
-        <div class="room-btn" onclick="enterRoom(this,'소동물','🐹','#fb923c','196명 온라인')">
-          <div class="rb-ico" style="background:rgba(251,146,60,.12)">🐹</div>
-          <span class="rb-name">소동물</span><span class="rb-cnt">196</span>
-        </div>
-        <div class="room-btn" onclick="enterRoom(this,'수생동물','🐠','#22d3ee','127명 온라인')">
-          <div class="rb-ico" style="background:rgba(34,211,238,.12)">🐠</div>
-          <span class="rb-name">수생동물</span><span class="rb-cnt">127</span>
-        </div>
-        <div class="cs-label">연령대</div>
-        <div class="age-btn" onclick="enterAge(this,'20대','#f472b6')">
-          <div class="age-badge" style="background:rgba(244,114,182,.15);color:#f472b6;">20대</div>
-          <span class="rb-cnt">834</span>
-        </div>
-        <div class="age-btn" onclick="enterAge(this,'30대','#60a5fa')">
-          <div class="age-badge" style="background:rgba(96,165,250,.15);color:#60a5fa;">30대</div>
-          <span class="rb-cnt">1.2k</span>
-        </div>
-        <div class="age-btn" onclick="enterAge(this,'40대','#4ade80')">
-          <div class="age-badge" style="background:rgba(74,222,128,.15);color:#4ade80;">40대</div>
-          <span class="rb-cnt">976</span>
-        </div>
-        <div class="age-btn" onclick="enterAge(this,'50대','#fb923c')">
-          <div class="age-badge" style="background:rgba(251,146,60,.15);color:#fb923c;">50대</div>
-          <span class="rb-cnt">543</span>
-        </div>
-        <div class="age-btn" onclick="enterAge(this,'60대+','#a78bfa')">
-          <div class="age-badge" style="background:rgba(167,139,250,.15);color:#a78bfa;">60대+</div>
-          <span class="rb-cnt">318</span>
-        </div>
-      </div>
-      <!-- messages -->
+      <div class="chat-sidebar" id="chatSidebar"></div>
       <div class="chat-main">
         <div class="chat-hdr">
           <div class="chat-hdr-ico" id="chatIco" style="background:rgba(74,222,128,.12)">🐶</div>
@@ -370,10 +268,10 @@
   <!-- MATCHING -->
   <div class="tab-panel" id="panel-matching">
     <div class="quick-row">
-      <button class="q-btn" onclick="" style="background:rgba(74,222,128,.12);color:var(--accent);border:1px solid rgba(74,222,128,.2)">🦮 도그워커</button>
-      <button class="q-btn" onclick="" style="background:rgba(96,165,250,.12);color:var(--accent2);border:1px solid rgba(96,165,250,.2)">🏠 호스트</button>
-      <button class="q-btn" onclick="" style="background:rgba(244,114,182,.12);color:var(--accent3);border:1px solid rgba(244,114,182,.2)">✂️ 그루밍</button>
-      <button class="q-btn" onclick="" style="background:rgba(251,191,36,.12);color:var(--warm);border:1px solid rgba(251,191,36,.2)">🏥 병원</button>
+      <button class="q-btn" data-f="도그워커" onclick="filterMatch(this)" style="background:rgba(74,222,128,.12);color:var(--accent);border:1px solid rgba(74,222,128,.2)">🦮 워커</button>
+      <button class="q-btn" data-f="호스트" onclick="filterMatch(this)" style="background:rgba(96,165,250,.12);color:var(--accent2);border:1px solid rgba(96,165,250,.2)">🏠 호스트</button>
+      <button class="q-btn" data-f="그루밍" onclick="filterMatch(this)" style="background:rgba(244,114,182,.12);color:var(--accent3);border:1px solid rgba(244,114,182,.2)">✂️ 그루밍</button>
+      <button class="q-btn" data-f="동물병원" onclick="filterMatch(this)" style="background:rgba(251,191,36,.12);color:var(--warm);border:1px solid rgba(251,191,36,.2)">🏥 병원</button>
     </div>
     <div class="scroll-panel" style="padding-top:10px;">
       <div class="match-grid" id="matchGrid"></div>
@@ -382,35 +280,67 @@
 
   <!-- COMMUNITY -->
   <div class="tab-panel" id="panel-community">
-    <div class="quick-row" style="justify-content:space-between;">
+    <div class="quick-row" style="justify-content:space-between;align-items:center;">
       <div style="font-size:14px;font-weight:700;">📋 커뮤니티</div>
-      <button class="nav-btn nav-btn-primary" style="font-size:11px;padding:6px 12px;">글쓰기 ✏️</button>
+      <button class="nav-btn nav-btn-primary" style="font-size:11px;padding:6px 12px;" onclick="openWrite()">글쓰기 ✏️</button>
     </div>
-    <div class="scroll-panel" style="padding-top:10px;">
-      <div id="commPosts"></div>
-    </div>
-  </div>
-
-</div><!-- /main-area -->
-
-<!-- BOTTOM NAV -->
-<div class="bottom-nav">
-  <div class="bn-btn active" id="bn-map"       onclick="switchTab('map')">
-    <div class="bn-ico">🗺</div><div class="bn-label">지도</div>
-  </div>
-  <div class="bn-btn"        id="bn-chat"      onclick="switchTab('chat')">
-    <div class="bn-ico">💬</div><div class="bn-label">채팅방</div>
-  </div>
-  <div class="bn-btn"        id="bn-matching"  onclick="switchTab('matching')">
-    <div class="bn-ico">🤝</div><div class="bn-label">매칭</div>
-  </div>
-  <div class="bn-btn"        id="bn-community" onclick="switchTab('community')">
-    <div class="bn-ico">📋</div><div class="bn-label">커뮤니티</div>
+    <div class="scroll-panel" style="padding-top:10px;"><div id="commPosts"></div></div>
   </div>
 </div>
 
+<div class="bottom-nav">
+  <div class="bn-btn active" id="bn-map" onclick="switchTab('map')"><div class="bn-ico">🗺</div><div class="bn-label">지도</div></div>
+  <div class="bn-btn" id="bn-chat" onclick="switchTab('chat')"><div class="bn-ico">💬</div><div class="bn-label">채팅방</div></div>
+  <div class="bn-btn" id="bn-matching" onclick="switchTab('matching')"><div class="bn-ico">🤝</div><div class="bn-label">매칭</div></div>
+  <div class="bn-btn" id="bn-community" onclick="switchTab('community')"><div class="bn-ico">📋</div><div class="bn-label">커뮤니티</div></div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-bg" id="bookModal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal">
+    <h3 id="bmName"></h3>
+    <div class="modal-sub" id="bmType"></div>
+    <div class="modal-row"><span>평점</span><span id="bmRating" style="color:var(--warm);font-weight:700;"></span></div>
+    <div class="modal-row"><span>가격</span><span id="bmPrice" style="color:var(--accent2);font-weight:700;"></span></div>
+    <div class="modal-row"><span>소개</span><span id="bmDesc" style="text-align:right;max-width:60%;"></span></div>
+    <div class="modal-row"><span>인증</span><span id="bmVerified"></span></div>
+    <div class="modal-btns">
+      <button class="modal-btn" style="background:var(--surface2);color:var(--muted);" onclick="document.getElementById('bookModal').classList.remove('show')">닫기</button>
+      <button class="modal-btn" style="background:var(--accent);color:#000;" onclick="doBook()">예약 요청 🐾</button>
+    </div>
+  </div>
+</div>
+
+<!-- WRITE MODAL -->
+<div class="modal-bg" id="writeModal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal">
+    <h3>✏️ 글쓰기</h3>
+    <div class="modal-sub">우리 동네 반려생활 이야기를 공유하세요</div>
+    <input class="write-inp" id="wTitle" placeholder="제목"/>
+    <select class="write-inp" id="wTag" style="cursor:pointer;">
+      <option value="강아지">🐶 강아지</option><option value="고양이">🐱 고양이</option>
+      <option value="파충류">🦎 파충류</option><option value="조류">🐦 조류</option>
+      <option value="매칭">🤝 매칭 후기</option><option value="병원">🏥 병원 리뷰</option>
+    </select>
+    <textarea class="write-inp" id="wBody" placeholder="내용을 입력하세요..."></textarea>
+    <div class="modal-btns">
+      <button class="modal-btn" style="background:var(--surface2);color:var(--muted);" onclick="document.getElementById('writeModal').classList.remove('show')">취소</button>
+      <button class="modal-btn" style="background:var(--accent);color:#000;" onclick="submitPost()">등록하기</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-// ── TICKER ──
+// ═══ UTILITIES ═══
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove('show'),2500);
+}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+// ═══ TICKER ═══
 const news=[
   {tag:'🐶',text:'2030 펫휴먼 세대, 반려동물을 자녀처럼 키우는 새로운 문화 확산'},
   {tag:'🏥',text:'반려동물 사료 성분 표시 꼼꼼히 확인해야 — 펫코노미 9000억 돌파'},
@@ -424,63 +354,118 @@ const news=[
 const track=document.getElementById('tickerTrack');
 [...news,...news].forEach(n=>{
   const s=document.createElement('span');s.className='ticker-item';
-  s.innerHTML=`<b>${n.tag}</b>${n.text}`;track.appendChild(s);
+  s.innerHTML=`<b>${n.tag}</b>${n.text}`;
+  s.onclick=()=>toast('뉴스 상세 페이지 준비 중입니다 📰');
+  track.appendChild(s);
 });
 
-// ── MAPBOX ──
+// ═══ MAPBOX ═══
 mapboxgl.accessToken='pk.eyJ1IjoibWlsaXZlcnNlMTAw'+'NCIsImEiOiJjbXF0NmltcjYwMWprMnpzaGFrdjF5YnA3In0.yqIA5e6OePYT65r-xZShLA';
-const map=new mapboxgl.Map({
-  container:'map',
-  style:'mapbox://styles/mapbox/standard',
-  center:[127.027,37.497],
-  zoom:13.5,pitch:55,bearing:-20,antialias:true
-});
+const map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/standard',center:[127.027,37.497],zoom:12.5,pitch:55,bearing:-20,antialias:true});
 map.on('style.load',()=>{
   map.setConfigProperty('basemap','lightPreset','night');
   map.setConfigProperty('basemap','showPointOfInterestLabels',true);
 });
 
 const places=[
-  {t:'hospital',e:'🏥',c:'#4ade80',name:'서울동물의료센터',note:'대형견 전문 · 24시간 응급',r:'★★★★★',addr:'강남구 역삼동',ll:[127.034,37.501]},
-  {t:'hospital',e:'🏥',c:'#4ade80',name:'강남중앙동물병원',note:'슬개골 수술 전문',r:'★★★★☆',addr:'강남구 도곡동',ll:[127.046,37.493]},
-  {t:'hospital',e:'🏥',c:'#4ade80',name:'분당 펫메디컬',note:'고양이 전용 대기실',r:'★★★★★',addr:'성남시 분당구',ll:[127.110,37.403]},
-  {t:'hotel',e:'🏨',c:'#60a5fa',name:'코엑스 펫스테이',note:'CCTV 24시 · 프리미엄',r:'★★★★★',addr:'강남구 삼성동',ll:[127.059,37.512]},
-  {t:'hotel',e:'🏨',c:'#60a5fa',name:'펫팰리스 호텔',note:'강아지·고양이 분리 구역',r:'★★★★☆',addr:'서초구 반포동',ll:[127.006,37.505]},
-  {t:'walker',e:'🦮',c:'#f472b6',name:'산책왕 김민준',note:'GPS 트래킹 · 사진 전송',r:'★★★★★',addr:'마포구',ll:[126.923,37.561]},
-  {t:'walker',e:'🦮',c:'#f472b6',name:'도그워커 박지수',note:'대형견 전문 · 훈련사 자격',r:'★★★★★',addr:'용산구',ll:[126.975,37.535]},
-  {t:'grooming',e:'✂️',c:'#fbbf24',name:'망원 펫살롱',note:'천연 샴푸 · 소형견 전문',r:'★★★★☆',addr:'마포구 망원동',ll:[126.910,37.556]},
-  {t:'grooming',e:'✂️',c:'#fbbf24',name:'강남 펫스타일',note:'스파 포함 · 프리미엄',r:'★★★★★',addr:'강남구 청담동',ll:[127.052,37.526]},
-  {t:'host',e:'🏠',c:'#a78bfa',name:'이서연 호스트',note:'소형견 · 넓은 거실',r:'★★★★☆',addr:'송파구 잠실',ll:[127.082,37.511]},
-  {t:'host',e:'🏠',c:'#a78bfa',name:'최준혁 호스트',note:'마당 단독주택 · 대형견 OK',r:'★★★★★',addr:'성북구 정릉',ll:[127.005,37.608]},
+  // 서울
+  {t:'hospital',e:'🏥',c:'#4ade80',name:'서울동물의료센터',note:'대형견 전문 · 24시간 응급',r:'★★★★★',rv:4.9,addr:'강남구 역삼동',ll:[127.034,37.501],p:'예약 후 상담'},
+  {t:'hospital',e:'🏥',c:'#4ade80',name:'강남중앙동물병원',note:'슬개골 수술 전문',r:'★★★★☆',rv:4.6,addr:'강남구 도곡동',ll:[127.046,37.493],p:'예약 후 상담'},
+  {t:'hospital',e:'🏥',c:'#4ade80',name:'홍대 고양이병원',note:'고양이 전문 · 스트레스 프리',r:'★★★★★',rv:4.8,addr:'마포구 서교동',ll:[126.918,37.553],p:'예약 후 상담'},
+  {t:'hotel',e:'🏨',c:'#60a5fa',name:'코엑스 펫스테이',note:'CCTV 24시 · 프리미엄',r:'★★★★★',rv:4.8,addr:'강남구 삼성동',ll:[127.059,37.512],p:'₩45,000/박'},
+  {t:'hotel',e:'🏨',c:'#60a5fa',name:'펫팰리스 호텔',note:'강아지·고양이 분리 구역',r:'★★★★☆',rv:4.5,addr:'서초구 반포동',ll:[127.006,37.505],p:'₩38,000/박'},
+  {t:'walker',e:'🦮',c:'#f472b6',name:'산책왕 김민준',note:'GPS 트래킹 · 사진 전송',r:'★★★★★',rv:4.9,addr:'마포구',ll:[126.923,37.561],p:'₩15,000/회'},
+  {t:'walker',e:'🦮',c:'#f472b6',name:'도그워커 박지수',note:'대형견 전문 · 훈련사 자격',r:'★★★★★',rv:5.0,addr:'용산구',ll:[126.975,37.535],p:'₩18,000/회'},
+  {t:'grooming',e:'✂️',c:'#fbbf24',name:'망원 펫살롱',note:'천연 샴푸 · 소형견 전문',r:'★★★★☆',rv:4.7,addr:'마포구 망원동',ll:[126.910,37.556],p:'₩35,000~'},
+  {t:'grooming',e:'✂️',c:'#fbbf24',name:'강남 펫스타일',note:'스파 포함 · 프리미엄',r:'★★★★★',rv:4.9,addr:'강남구 청담동',ll:[127.052,37.526],p:'₩60,000~'},
+  {t:'host',e:'🏠',c:'#a78bfa',name:'이서연 호스트',note:'소형견 · 넓은 거실',r:'★★★★☆',rv:4.6,addr:'송파구 잠실',ll:[127.082,37.511],p:'₩25,000/박'},
+  {t:'host',e:'🏠',c:'#a78bfa',name:'최준혁 호스트',note:'마당 단독주택 · 대형견 OK',r:'★★★★★',rv:4.9,addr:'성북구 정릉',ll:[127.005,37.608],p:'₩35,000/박'},
+  // 수원·분당
+  {t:'hospital',e:'🏥',c:'#4ade80',name:'분당 펫메디컬',note:'고양이 전용 대기실',r:'★★★★★',rv:4.9,addr:'성남시 분당구',ll:[127.110,37.403],p:'예약 후 상담'},
+  {t:'hospital',e:'🏥',c:'#4ade80',name:'수원 24시 동물메디컬',note:'야간 응급 · 영상의학',r:'★★★★☆',rv:4.6,addr:'수원시 영통구',ll:[127.046,37.251],p:'예약 후 상담'},
+  {t:'hospital',e:'🏥',c:'#4ade80',name:'광교 반려동물병원',note:'심장 질환 특화',r:'★★★★★',rv:4.8,addr:'수원시 영통구 광교',ll:[127.066,37.297],p:'예약 후 상담'},
+  {t:'hotel',e:'🏨',c:'#60a5fa',name:'수원 펫호텔 스위트',note:'개별 룸 · 실내 놀이터',r:'★★★★★',rv:4.7,addr:'수원시 팔달구',ll:[127.009,37.281],p:'₩40,000/박'},
+  {t:'walker',e:'🦮',c:'#f472b6',name:'수원 워커 이하늘',note:'광교호수공원 산책 전문',r:'★★★★★',rv:4.9,addr:'수원시 영통구',ll:[127.058,37.285],p:'₩14,000/회'},
+  {t:'grooming',e:'✂️',c:'#fbbf24',name:'영통 펫그루밍',note:'가위컷 전문 · 무마취',r:'★★★★☆',rv:4.6,addr:'수원시 영통구',ll:[127.071,37.253],p:'₩30,000~'},
+  {t:'host',e:'🏠',c:'#a78bfa',name:'수원 정민아 호스트',note:'재택근무 · 상시 케어',r:'★★★★★',rv:4.8,addr:'수원시 장안구',ll:[127.010,37.304],p:'₩22,000/박'},
 ];
+
 const typeKr={hospital:'동물병원',hotel:'펫호텔',walker:'도그워커',grooming:'그루밍',host:'호스트'};
 const active=new Set(['hospital','hotel','walker','grooming','host']);
 const markers=[];
+let myMarker=null;
+
+function updateCount(){
+  const visible=markers.filter(m=>active.has(m.type)).length;
+  document.getElementById('mapCount').innerHTML=`📌 표시 중 <b>${visible}</b>곳`;
+}
+
 map.on('load',()=>{
   places.forEach(p=>{
     const el=document.createElement('div');
     el.style.cssText=`width:38px;height:38px;border-radius:11px;background:${p.c}18;border:2px solid ${p.c};display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:transform .12s;box-shadow:0 3px 12px ${p.c}33;`;
-    el.innerHTML=p.e;el.dataset.type=p.t;
+    el.innerHTML=p.e;
     el.addEventListener('mouseenter',()=>el.style.transform='scale(1.2)');
     el.addEventListener('mouseleave',()=>el.style.transform='scale(1)');
     const popup=new mapboxgl.Popup({offset:12,closeButton:false,maxWidth:'200px'})
       .setHTML(`<div class="pop-name">${p.e} ${p.name}</div>
         <span class="pop-type" style="background:${p.c}22;color:${p.c};">${typeKr[p.t]}</span>
-        <div class="pop-meta">📍 ${p.addr}</div>
-        <div class="pop-meta">${p.note}</div>
-        <div class="pop-r">${p.r}</div>
-        <button class="pop-btn" onclick="switchTab('matching')">예약 · 연락하기 →</button>`);
+        <div class="pop-meta">📍 ${p.addr}</div><div class="pop-meta">${p.note}</div>
+        <div class="pop-r">${p.r} (${p.rv})</div>
+        <button class="pop-btn" onclick='openBook(${JSON.stringify(JSON.stringify(p))})'>예약 · 연락하기 →</button>`);
     const mk=new mapboxgl.Marker({element:el}).setLngLat(p.ll).setPopup(popup).addTo(map);
-    markers.push({mk,type:p.t,el});
+    markers.push({mk,type:p.t,el,place:p});
   });
+  updateCount();
 });
 function toggleF(btn,type){
   active.has(type)?active.delete(type):active.add(type);
   btn.classList.toggle('on');
   markers.forEach(({el,type:t})=>{el.style.display=active.has(t)?'flex':'none';});
+  updateCount();
 }
 
-// ── TABS ──
+// ═══ 내 위치 ═══
+function goMyLocation(){
+  if(!navigator.geolocation){toast('위치 서비스를 지원하지 않는 브라우저예요');return;}
+  const btn=document.getElementById('locBtn');btn.classList.add('locating');
+  navigator.geolocation.getCurrentPosition(pos=>{
+    btn.classList.remove('locating');
+    const ll=[pos.coords.longitude,pos.coords.latitude];
+    if(myMarker)myMarker.remove();
+    const el=document.createElement('div');
+    el.style.cssText='width:20px;height:20px;border-radius:50%;background:#60a5fa;border:3px solid #fff;box-shadow:0 0 0 8px rgba(96,165,250,.25);';
+    myMarker=new mapboxgl.Marker({element:el}).setLngLat(ll).addTo(map);
+    map.flyTo({center:ll,zoom:14,duration:1500});
+    toast('📍 내 위치로 이동했어요');
+  },()=>{btn.classList.remove('locating');toast('위치 권한을 허용해주세요');},{timeout:8000});
+}
+
+// ═══ 검색 ═══
+function doSearch(q){
+  const box=document.getElementById('searchResults');
+  q=q.trim();
+  if(q.length<1){box.classList.remove('show');return;}
+  const hits=places.filter(p=>p.name.includes(q)||p.addr.includes(q)||typeKr[p.t].includes(q)||p.note.includes(q)).slice(0,6);
+  if(!hits.length){box.innerHTML='<div class="sr-item" style="color:var(--muted)">검색 결과가 없어요</div>';box.classList.add('show');return;}
+  box.innerHTML='';
+  hits.forEach(p=>{
+    const d=document.createElement('div');d.className='sr-item';
+    d.innerHTML=`${p.e} <div><div style="font-weight:600">${p.name}</div><div style="font-size:10px;color:var(--muted)">📍 ${p.addr}</div></div>`;
+    d.onclick=()=>{
+      switchTab('map');
+      map.flyTo({center:p.ll,zoom:15,duration:1400});
+      box.classList.remove('show');
+      document.getElementById('searchInp').value='';
+      const found=markers.find(m=>m.place===p);
+      if(found)setTimeout(()=>found.mk.togglePopup(),1500);
+    };
+    box.appendChild(d);
+  });
+  box.classList.add('show');
+}
+
+// ═══ TABS ═══
 function switchTab(name){
   document.querySelectorAll('.c-tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
@@ -491,148 +476,208 @@ function switchTab(name){
   if(name==='map')setTimeout(()=>map.resize(),50);
 }
 
-// ── CHAT ──
-const chatData={
-  '강아지':[
-    {u:'뽀글맘🐶',av:'🐶',msg:'안녕하세요~ 우리 말티즈가 요즘 밥을 잘 안 먹네요 ㅠㅠ',t:'14:32'},
-    {u:'황금이맘',av:'🐕',msg:'혹시 사료 브랜드 바꾸셨어요? 저도 비슷한 경험이 있었어요',t:'14:33'},
-    {u:'나',av:'🐾',msg:'저는 습식 사료 조금 섞어줬더니 잘 먹더라고요!',t:'14:34',mine:true},
-    {u:'수의사_최원장',av:'👨‍⚕️',msg:'⚕️ 밥 거부가 3일 이상이면 진찰 받아보시는 게 좋아요',t:'14:35'},
-  ],
-  '고양이':[
-    {u:'냥이아빠',av:'🐱',msg:'고양이가 갑자기 밤에 울어서 잠을 못 자겠어요ㅠ',t:'13:10'},
-    {u:'두부고양이',av:'🐈',msg:'중성화 수술 전이면 그럴 수 있어요! 빠를수록 좋아요',t:'13:12'},
-    {u:'나',av:'🐾',msg:'수술 후에 훨씬 조용해졌어요',t:'13:15',mine:true},
-  ],
-  '파충류':[
-    {u:'도마뱀킹🦎',av:'🦎',msg:'비어디드래곤 UVB 램프 주기 어떻게 관리하세요?',t:'11:22'},
-    {u:'렙타일매니아',av:'🐊',msg:'10~12시간 켜두고 타이머 쓰면 편해요',t:'11:25'},
-    {u:'나',av:'🐾',msg:'저도 타이머 씁니다 자동으로 조절돼서 편해요!',t:'11:30',mine:true},
-  ],
-  '조류':[
-    {u:'앵무새집사',av:'🐦',msg:'아프리카 그레이 키우시는 분 있나요?',t:'10:00'},
-    {u:'버드마니아',av:'🦜',msg:'저요! 말 배우는 데 6개월 걸렸어요',t:'10:05'},
-    {u:'나',av:'🐾',msg:'그레이가 IQ 5살 수준이라던데 대박이에요',t:'10:08',mine:true},
-  ],
-  '소동물':[
-    {u:'햄찌맘',av:'🐹',msg:'햄스터 수명이 어떻게 되나요?',t:'09:30'},
-    {u:'소동물전문가',av:'🐭',msg:'보통 2~3년이에요. 케어 잘 해주시면 3년 넘기도 해요',t:'09:33'},
-    {u:'나',av:'🐾',msg:'케이지 크기도 중요해요 최소 60cm 권장',t:'09:35',mine:true},
-  ],
-  '수생동물':[
-    {u:'수족관왕',av:'🐠',msg:'베타 어항 물 교환 주기 어떻게 하세요?',t:'08:15'},
-    {u:'아쿠아마니아',av:'🐟',msg:'25~30% 주 1회가 적당해요. 암모니아 수치 체크도 꼭!',t:'08:18'},
-    {u:'나',av:'🐾',msg:'테스트키트 꼭 구비하세요 정말 필수예요',t:'08:20',mine:true},
-  ],
+// ═══ CHAT ═══
+const speciesRooms=[
+  {name:'강아지',ico:'🐶',c:'#4ade80',cnt:'2.1k',desc:'강아지 보호자 2,143명 온라인'},
+  {name:'고양이',ico:'🐱',c:'#60a5fa',cnt:'1.8k',desc:'고양이 집사 1,842명 온라인'},
+  {name:'파충류',ico:'🦎',c:'#a78bfa',cnt:'342',desc:'파충류 매니아 342명 온라인'},
+  {name:'조류',ico:'🐦',c:'#f472b6',cnt:'218',desc:'조류 보호자 218명 온라인'},
+  {name:'소동물',ico:'🐹',c:'#fb923c',cnt:'196',desc:'소동물 보호자 196명 온라인'},
+  {name:'수생동물',ico:'🐠',c:'#22d3ee',cnt:'127',desc:'수생동물 마니아 127명 온라인'},
+];
+const ageRooms=[
+  {name:'20대',c:'#f472b6',cnt:'834'},{name:'30대',c:'#60a5fa',cnt:'1.2k'},
+  {name:'40대',c:'#4ade80',cnt:'976'},{name:'50대',c:'#fb923c',cnt:'543'},{name:'60대+',c:'#a78bfa',cnt:'318'},
+];
+const chatSeed={
+  '강아지':[{u:'뽀글맘🐶',av:'🐶',msg:'우리 말티즈가 요즘 밥을 잘 안 먹네요 ㅠㅠ',t:'14:32'},{u:'황금이맘',av:'🐕',msg:'사료 브랜드 바꾸셨어요? 저도 비슷한 경험 있어요',t:'14:33'},{u:'수의사_최원장',av:'👨‍⚕️',msg:'⚕️ 밥 거부가 3일 이상이면 진찰 받아보시는 게 좋아요',t:'14:35'}],
+  '고양이':[{u:'냥이아빠',av:'🐱',msg:'고양이가 갑자기 밤에 울어서 잠을 못 자겠어요ㅠ',t:'13:10'},{u:'두부고양이',av:'🐈',msg:'중성화 수술 전이면 그럴 수 있어요!',t:'13:12'}],
+  '파충류':[{u:'도마뱀킹🦎',av:'🦎',msg:'비어디드래곤 UVB 램프 주기 어떻게 관리하세요?',t:'11:22'},{u:'렙타일매니아',av:'🐊',msg:'10~12시간 켜두고 타이머 쓰면 편해요',t:'11:25'}],
+  '조류':[{u:'앵무새집사',av:'🐦',msg:'아프리카 그레이 키우시는 분 있나요?',t:'10:00'},{u:'버드마니아',av:'🦜',msg:'저요! 말 배우는 데 6개월 걸렸어요',t:'10:05'}],
+  '소동물':[{u:'햄찌맘',av:'🐹',msg:'햄스터 수명이 어떻게 되나요?',t:'09:30'},{u:'소동물전문가',av:'🐭',msg:'보통 2~3년, 케어 잘 하면 3년 넘겨요',t:'09:33'}],
+  '수생동물':[{u:'수족관왕',av:'🐠',msg:'베타 어항 물 교환 주기 어떻게 하세요?',t:'08:15'},{u:'아쿠아마니아',av:'🐟',msg:'25~30% 주 1회 + 암모니아 체크!',t:'08:18'}],
+  '20대':[{u:'펫인플루언서🌟',av:'✨',msg:'오늘 강아지랑 반려동물 카페 다녀왔어요🥰',t:'15:01'},{u:'새내기보호자',av:'🌱',msg:'처음 키우는데 뭐부터 준비해야 해요?',t:'15:03'}],
+  '30대':[{u:'워킹맘+댕댕이',av:'👩‍👧',msg:'어린이집 아이랑 강아지 같이 키우시는 분?',t:'09:11'},{u:'두아이아빠',av:'👨‍👦',msg:'저요! 지금은 너무 사이 좋아요',t:'09:13'}],
+  '40대':[{u:'건강관리맘',av:'💊',msg:'우리 강아지 15살인데 관절이 안 좋아요',t:'10:30'},{u:'수의사_박원장',av:'👨‍⚕️',msg:'⚕️ 오메가3 + 저영향 운동 추천드려요',t:'10:33'}],
+  '50대':[{u:'은퇴후반려생활',av:'🏡',msg:'은퇴하고 나서 강아지가 정말 큰 위안이 돼요',t:'11:00'},{u:'노령묘보호자',av:'🐈',msg:'저도 고양이랑 14년째 정말 가족이에요',t:'11:05'}],
+  '60대+':[{u:'할머니와고양이',av:'👵',msg:'혼자 사는데 고양이가 있어서 외롭지 않아요',t:'14:00'},{u:'실버펫라이프',av:'🌸',msg:'소형견이 노인분들한테 특히 좋아요',t:'14:04'}],
 };
-const ageData={
-  '20대':[{u:'펫인플루언서🌟',av:'✨',msg:'오늘 강아지랑 반려동물 카페 다녀왔어요🥰',t:'15:01'},{u:'새내기보호자',av:'🌱',msg:'처음 키우는데 뭐부터 준비해야 해요?',t:'15:03'},{u:'나',av:'🐾',msg:'케이지, 사료, 패드부터!',t:'15:05',mine:true}],
-  '30대':[{u:'워킹맘+댕댕이',av:'👩‍👧',msg:'어린이집 아이랑 강아지 같이 키우시는 분?',t:'09:11'},{u:'두아이아빠',av:'👨‍👦',msg:'저요! 지금은 너무 사이 좋아요',t:'09:13'},{u:'나',av:'🐾',msg:'중형견이 아이들이랑 잘 논대요',t:'09:15',mine:true}],
-  '40대':[{u:'건강관리맘',av:'💊',msg:'우리 강아지 15살인데 관절이 안 좋아요',t:'10:30'},{u:'수의사_박원장',av:'👨‍⚕️',msg:'⚕️ 오메가3 + 저영향 운동 추천드려요',t:'10:33'},{u:'나',av:'🐾',msg:'수중 재활 치료도 좋다고 들었어요!',t:'10:35',mine:true}],
-  '50대':[{u:'은퇴후반려생활',av:'🏡',msg:'은퇴하고 나서 강아지가 정말 큰 위안이 돼요',t:'11:00'},{u:'노령묘보호자',av:'🐈',msg:'저도 고양이랑 14년째 정말 가족이에요',t:'11:05'},{u:'나',av:'🐾',msg:'더 많은 시간을 함께하실 수 있겠네요!',t:'11:08',mine:true}],
-  '60대+':[{u:'할머니와고양이',av:'👵',msg:'혼자 사는데 고양이가 있어서 외롭지 않아요',t:'14:00'},{u:'실버펫라이프',av:'🌸',msg:'소형견이 노인분들한테 특히 좋아요',t:'14:04'},{u:'나',av:'🐾',msg:'산책도 되고 정서적으로도 너무 좋죠',t:'14:06',mine:true}],
+// 자동응답 풀
+const botReplies={
+  '강아지':[['황금이맘','🐕','저희 아이도 그랬어요! 공감돼요 ㅎㅎ'],['산책러버','🐕‍🦺','좋은 정보 감사합니다!'],['뽀글맘🐶','🐶','오 맞아요 맞아요!!']],
+  '고양이':[['두부고양이','🐈','냥이들은 정말 신비로워요 ㅋㅋ'],['츄르중독','🐱','저도 궁금했던 내용이에요!']],
+  '파충류':[['렙타일매니아','🐊','파충류 키우는 분들 여기 다 모였네요 ㅎㅎ'],['도마뱀킹🦎','🦎','좋은 팁이에요!']],
+  'default':[['이웃보호자','🐾','좋은 이야기 감사해요!'],['펫메이트','💚','환영합니다! 좋은 하루 되세요 :)']],
 };
-function renderChat(msgs){
+let currentRoomName='강아지';
+// localStorage에 채팅 저장
+function loadChat(room){
+  try{const s=localStorage.getItem('pm_chat_'+room);if(s)return JSON.parse(s);}catch(e){}
+  return chatSeed[room]?[...chatSeed[room]]:[];
+}
+function saveChat(room,msgs){
+  try{localStorage.setItem('pm_chat_'+room,JSON.stringify(msgs.slice(-50)));}catch(e){}
+}
+let chatMsgs=loadChat('강아지');
+
+function renderChat(){
   const box=document.getElementById('chatMsgs');box.innerHTML='';
-  msgs.forEach(m=>{
+  chatMsgs.forEach(m=>{
     const d=document.createElement('div');d.className='msg'+(m.mine?' mine':'');
-    d.innerHTML=`<div class="msg-av">${m.av}</div><div>${!m.mine?`<div class="msg-nm">${m.u}</div>`:''}
-      <div class="msg-bub">${m.msg}</div><div class="msg-t">${m.t}</div></div>`;
+    d.innerHTML=`<div class="msg-av">${m.av}</div><div>${!m.mine?`<div class="msg-nm">${esc(m.u)}</div>`:''}
+      <div class="msg-bub">${esc(m.msg)}</div><div class="msg-t">${m.t}</div></div>`;
     box.appendChild(d);
   });
   box.scrollTop=box.scrollHeight;
 }
+function buildSidebar(){
+  const sb=document.getElementById('chatSidebar');sb.innerHTML='<div class="cs-label">종별</div>';
+  speciesRooms.forEach((r,i)=>{
+    const d=document.createElement('div');d.className='room-btn'+(i===0?' active':'');
+    d.innerHTML=`<div class="rb-ico" style="background:${r.c}1f">${r.ico}</div><span class="rb-name">${r.name}</span><span class="rb-cnt">${r.cnt}</span>`;
+    d.onclick=()=>enterRoom(d,r.name,r.ico,r.c,r.desc);
+    sb.appendChild(d);
+  });
+  const lbl=document.createElement('div');lbl.className='cs-label';lbl.textContent='연령대';sb.appendChild(lbl);
+  ageRooms.forEach(r=>{
+    const d=document.createElement('div');d.className='age-btn';
+    d.innerHTML=`<div class="age-badge" style="background:${r.c}26;color:${r.c};">${r.name}</div><span class="rb-cnt" style="margin-left:auto">${r.cnt}</span>`;
+    d.onclick=()=>enterRoom(d,r.name,'💬',r.c,r.name+' 보호자 소통 공간');
+    sb.appendChild(d);
+  });
+}
 function enterRoom(el,name,ico,color,desc){
   document.querySelectorAll('.room-btn,.age-btn').forEach(r=>r.classList.remove('active'));
   el.classList.add('active');
+  currentRoomName=name;
   document.getElementById('chatIco').textContent=ico;
-  document.getElementById('chatIco').style.background=color+'1a';
+  document.getElementById('chatIco').style.background=color+'1f';
   document.getElementById('chatName').textContent=name+' 채팅방';
   document.getElementById('chatDesc').textContent=desc;
-  renderChat(chatData[name]||chatData['강아지']);
-  switchTab('chat');
-}
-function enterAge(el,age,color){
-  document.querySelectorAll('.room-btn,.age-btn').forEach(r=>r.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('chatIco').textContent='💬';
-  document.getElementById('chatIco').style.background=color+'1a';
-  document.getElementById('chatName').textContent=age+' 반려동물 방';
-  document.getElementById('chatDesc').textContent=age+' 보호자 소통 공간';
-  renderChat(ageData[age]||ageData['30대']);
+  chatMsgs=loadChat(name);
+  renderChat();
   switchTab('chat');
 }
 function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function nowT(){const t=new Date();return `${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}`;}
 function sendMsg(){
   const inp=document.getElementById('chatInp');const txt=inp.value.trim();if(!txt)return;
-  const box=document.getElementById('chatMsgs');const d=document.createElement('div');d.className='msg mine';
-  const t=new Date();const ts=`${t.getHours()}:${String(t.getMinutes()).padStart(2,'0')}`;
-  d.innerHTML=`<div class="msg-av">🐾</div><div><div class="msg-bub">${txt}</div><div class="msg-t">${ts}</div></div>`;
-  box.appendChild(d);box.scrollTop=box.scrollHeight;inp.value='';
+  chatMsgs.push({u:'나',av:'🐾',msg:txt,t:nowT(),mine:true});
+  saveChat(currentRoomName,chatMsgs);renderChat();inp.value='';
+  // 자동 응답 (살아있는 느낌)
+  const pool=botReplies[currentRoomName]||botReplies['default'];
+  const [u,av,msg]=pool[Math.floor(Math.random()*pool.length)];
+  document.getElementById('chatDesc').innerHTML=`${u}님이 입력 중<span class="typing-dot">...</span>`;
+  setTimeout(()=>{
+    chatMsgs.push({u,av,msg,t:nowT()});
+    saveChat(currentRoomName,chatMsgs);renderChat();
+    document.getElementById('chatDesc').textContent=currentRoomName+' 보호자들의 채팅방';
+  },1500+Math.random()*1500);
 }
 
-// ── MATCHING ──
-const matchData=[
-  {t:'도그워커',e:'🦮',name:'김민준 워커',desc:'GPS 트래킹·사진 전송·1:1 전담',r:'★★★★★(4.9)',p:'₩15,000/회',v:true},
-  {t:'도그워커',e:'🦮',name:'박지수 워커',desc:'대형견 전문·훈련사 자격·3년 경력',r:'★★★★★(5.0)',p:'₩18,000/회',v:true},
-  {t:'펫호텔',e:'🏨',name:'코엑스 펫스테이',desc:'CCTV 24시·에어컨·식사 포함',r:'★★★★★(4.8)',p:'₩45,000/박',v:true},
-  {t:'호스트',e:'🏠',name:'이서연 호스트',desc:'소형견 전문·1마리만·넓은 거실',r:'★★★★☆(4.6)',p:'₩25,000/박',v:false},
-  {t:'호스트',e:'🏠',name:'최준혁 호스트',desc:'마당 단독주택·대형견·2마리 OK',r:'★★★★★(4.9)',p:'₩35,000/박',v:true},
-  {t:'그루밍',e:'✂️',name:'망원 펫살롱',desc:'천연 샴푸·소형견·당일 예약',r:'★★★★☆(4.7)',p:'₩35,000~',v:true},
-  {t:'그루밍',e:'✂️',name:'강남 펫스타일',desc:'스파 포함·코트 케어·프리미엄',r:'★★★★★(4.9)',p:'₩60,000~',v:true},
-  {t:'동물병원',e:'🏥',name:'서울동물의료센터',desc:'24시간 응급·영상의학·심장 전문',r:'★★★★★(4.9)',p:'예약 후 상담',v:true},
-];
-const mg=document.getElementById('matchGrid');
-matchData.forEach(m=>{
-  const c=document.createElement('div');c.className='match-card';
-  c.innerHTML=`<div class="mc-type">${m.e} ${m.t}</div><h4>${m.name}</h4><p>${m.desc}</p>
-    <div class="mc-meta"><span class="mc-r">${m.r}</span>${m.v?'<span class="mc-v">✓ 인증</span>':''}<span class="mc-p">${m.p}</span></div>`;
-  mg.appendChild(c);
-});
+// ═══ MATCHING ═══
+const matchData=places.map(p=>({t:typeKr[p.t],e:p.e,name:p.name,desc:p.note+' · '+p.addr,r:p.r+'('+p.rv+')',p:p.p,v:p.rv>=4.7,raw:p}));
+let matchFilter=null;
+function filterMatch(btn){
+  const f=btn.dataset.f;
+  document.querySelectorAll('.q-btn').forEach(b=>b.classList.remove('on'));
+  if(matchFilter===f){matchFilter=null;}
+  else{matchFilter=f;btn.classList.add('on');}
+  renderMatch();
+}
+function renderMatch(){
+  const mg=document.getElementById('matchGrid');mg.innerHTML='';
+  const fmap={'도그워커':'도그워커','호스트':'호스트','그루밍':'그루밍','동물병원':'동물병원'};
+  matchData.filter(m=>!matchFilter||m.t===fmap[matchFilter]).forEach(m=>{
+    const c=document.createElement('div');c.className='match-card';
+    c.innerHTML=`<div class="mc-type">${m.e} ${m.t}</div><h4>${m.name}</h4><p>${m.desc}</p>
+      <div class="mc-meta"><span class="mc-r">${m.r}</span>${m.v?'<span class="mc-v">✓ 인증</span>':''}<span class="mc-p">${m.p}</span></div>`;
+    c.onclick=()=>openBook(JSON.stringify(m.raw));
+    mg.appendChild(c);
+  });
+}
 
-// ── COMMUNITY ──
-const posts=[
-  {av:'🐶',auth:'뽀글맘',ago:'10분 전',tag:'강아지',tc:'#4ade80',loc:'수원 영통구',
-   title:'강아지 슬개골 수술 후기 — 분당 펫메디컬',
-   body:'선생님이 너무 친절하게 설명해주시고 과잉진료 없이 정직하게 해주셔서 감동이었어요.',
-   likes:84,comments:23,views:1240},
-  {av:'🐱',auth:'냥이아빠',ago:'32분 전',tag:'고양이',tc:'#60a5fa',loc:'마포구',
-   title:'고양이 밥 거부 3일째 — 해결한 방법 공유',
-   body:'사료를 서늘하게 보관했더니 바로 먹더라고요. 여름엔 실온 보관 금물!',
-   likes:62,comments:18,views:890},
-  {av:'🦮',auth:'도그워커_김민준',ago:'1시간 전',tag:'매칭',tc:'#f472b6',loc:'용산구',
-   title:'[매칭 후기] 3개월 만에 단골 고객 20명 생겼어요',
-   body:'GPS 트래킹 + 사진 전송 서비스를 하다 보니 보호자분들이 너무 좋아하세요.',
-   likes:145,comments:37,views:2100},
-  {av:'🦎',auth:'도마뱀킹',ago:'2시간 전',tag:'파충류',tc:'#a78bfa',loc:'성남 분당',
-   title:'비어디드래곤 초보자 완벽 가이드',
-   body:'UVB 조명, 온도 구배, 먹이 급여 사이클만 잡으면 됩니다.',
-   likes:198,comments:54,views:3400},
-  {av:'👩‍👧',auth:'워킹맘+댕댕이',ago:'3시간 전',tag:'30대방',tc:'#fbbf24',loc:'송파구',
-   title:'어린이집 아이 + 강아지 함께 키우는 현실',
-   body:'처음엔 후회했어요. 근데 지금 3년째인데 아이가 정서적으로 너무 잘 자라요.',
-   likes:231,comments:67,views:4100},
-];
-const pc=document.getElementById('commPosts');
-posts.forEach(p=>{
-  const d=document.createElement('div');d.className='post-card';
-  d.innerHTML=`<div class="pt">
-    <div class="p-av">${p.av}</div>
-    <div><div class="p-auth">${p.auth}<span class="p-loc">📍${p.loc}</span></div><div class="p-ago">${p.ago}</div></div>
-    <span class="p-tag" style="background:${p.tc}18;color:${p.tc};">${p.tag}</span>
-  </div>
-  <div class="p-title">${p.title}</div>
-  <div class="p-body">${p.body}</div>
-  <div class="p-acts">
-    <span class="p-act">❤️ ${p.likes}</span>
-    <span class="p-act">💬 ${p.comments}</span>
-    <span class="p-act">👁 ${p.views}</span>
-    <span class="p-act" style="margin-left:auto;">공유 ↗</span>
-  </div>`;
-  pc.appendChild(d);
-});
+// ═══ BOOKING MODAL ═══
+let currentBooking=null;
+function openBook(json){
+  const p=typeof json==='string'?JSON.parse(json):json;
+  currentBooking=p;
+  document.getElementById('bmName').textContent=p.e+' '+p.name;
+  document.getElementById('bmType').textContent=typeKr[p.t]+' · 📍 '+p.addr;
+  document.getElementById('bmRating').textContent=p.r+' ('+p.rv+')';
+  document.getElementById('bmPrice').textContent=p.p;
+  document.getElementById('bmDesc').textContent=p.note;
+  document.getElementById('bmVerified').innerHTML=p.rv>=4.7?'<span style="color:var(--accent)">✓ 펫메이트 인증</span>':'<span style="color:var(--muted)">미인증</span>';
+  document.getElementById('bookModal').classList.add('show');
+}
+function doBook(){
+  document.getElementById('bookModal').classList.remove('show');
+  toast(`🐾 ${currentBooking.name}에 예약 요청을 보냈어요!`);
+}
 
-renderChat(chatData['강아지']);
+// ═══ COMMUNITY ═══
+const tagColors={'강아지':'#4ade80','고양이':'#60a5fa','파충류':'#a78bfa','조류':'#f472b6','매칭':'#f472b6','병원':'#fbbf24','30대방':'#fbbf24'};
+let posts=[
+  {av:'🐶',auth:'뽀글맘',ago:'10분 전',tag:'강아지',loc:'수원 영통구',title:'강아지 슬개골 수술 후기 — 분당 펫메디컬',body:'선생님이 너무 친절하게 설명해주시고 과잉진료 없이 정직하게 해주셔서 감동이었어요.',likes:84,comments:23,views:1240},
+  {av:'🐱',auth:'냥이아빠',ago:'32분 전',tag:'고양이',loc:'마포구',title:'고양이 밥 거부 3일째 — 해결한 방법 공유',body:'사료를 서늘하게 보관했더니 바로 먹더라고요. 여름엔 실온 보관 금물!',likes:62,comments:18,views:890},
+  {av:'🦮',auth:'도그워커_김민준',ago:'1시간 전',tag:'매칭',loc:'용산구',title:'[매칭 후기] 3개월 만에 단골 고객 20명 생겼어요',body:'GPS 트래킹 + 사진 전송 서비스를 하다 보니 보호자분들이 너무 좋아하세요.',likes:145,comments:37,views:2100},
+  {av:'🦎',auth:'도마뱀킹',ago:'2시간 전',tag:'파충류',loc:'성남 분당',title:'비어디드래곤 초보자 완벽 가이드',body:'UVB 조명, 온도 구배, 먹이 급여 사이클만 잡으면 됩니다.',likes:198,comments:54,views:3400},
+  {av:'👩‍👧',auth:'워킹맘+댕댕이',ago:'3시간 전',tag:'30대방',loc:'송파구',title:'어린이집 아이 + 강아지 함께 키우는 현실',body:'처음엔 후회했어요. 근데 지금 3년째인데 아이가 정서적으로 너무 잘 자라요.',likes:231,comments:67,views:4100},
+];
+// localStorage 유저 글 복원
+try{const saved=localStorage.getItem('pm_posts');if(saved)posts=[...JSON.parse(saved),...posts];}catch(e){}
+const likedSet=new Set(JSON.parse(localStorage.getItem('pm_likes')||'[]'));
+
+function renderPosts(){
+  const pc=document.getElementById('commPosts');pc.innerHTML='';
+  posts.forEach((p,i)=>{
+    const tc=tagColors[p.tag]||'#7b849a';
+    const liked=likedSet.has(p.title);
+    const d=document.createElement('div');d.className='post-card';
+    d.innerHTML=`<div class="pt">
+      <div class="p-av">${p.av}</div>
+      <div><div class="p-auth">${esc(p.auth)}<span class="p-loc">📍${esc(p.loc)}</span></div><div class="p-ago">${p.ago}</div></div>
+      <span class="p-tag" style="background:${tc}18;color:${tc};">${esc(p.tag)}</span>
+    </div>
+    <div class="p-title">${esc(p.title)}</div>
+    <div class="p-body">${esc(p.body)}</div>
+    <div class="p-acts">
+      <span class="p-act ${liked?'liked':''}" onclick="toggleLike(${i},this)">❤️ <span>${p.likes+(liked?1:0)}</span></span>
+      <span class="p-act">💬 ${p.comments}</span>
+      <span class="p-act">👁 ${p.views}</span>
+      <span class="p-act" style="margin-left:auto;" onclick="toast('링크가 복사됐어요 📋')">공유 ↗</span>
+    </div>`;
+    pc.appendChild(d);
+  });
+}
+function toggleLike(i,el){
+  const p=posts[i];
+  if(likedSet.has(p.title)){likedSet.delete(p.title);}else{likedSet.add(p.title);}
+  localStorage.setItem('pm_likes',JSON.stringify([...likedSet]));
+  renderPosts();
+}
+function openWrite(){document.getElementById('writeModal').classList.add('show');}
+function submitPost(){
+  const title=document.getElementById('wTitle').value.trim();
+  const body=document.getElementById('wBody').value.trim();
+  const tag=document.getElementById('wTag').value;
+  if(!title||!body){toast('제목과 내용을 입력해주세요!');return;}
+  const newPost={av:'🐾',auth:'나',ago:'방금 전',tag,loc:'우리 동네',title,body,likes:0,comments:0,views:1};
+  posts.unshift(newPost);
+  // 유저 글만 저장
+  const userPosts=posts.filter(p=>p.auth==='나');
+  try{localStorage.setItem('pm_posts',JSON.stringify(userPosts));}catch(e){}
+  renderPosts();
+  document.getElementById('writeModal').classList.remove('show');
+  document.getElementById('wTitle').value='';document.getElementById('wBody').value='';
+  toast('✏️ 글이 등록됐어요!');
+}
+
+// ═══ INIT ═══
+buildSidebar();
+renderChat();
+renderMatch();
+renderPosts();
 </script>
 </body>
 </html>
