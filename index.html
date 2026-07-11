@@ -269,6 +269,7 @@
   <div class="tab-panel" id="panel-matching">
     <div class="quick-row">
       <button class="q-btn" data-f="도그워커" onclick="filterMatch(this)" style="background:rgba(74,222,128,.12);color:var(--accent);border:1px solid rgba(74,222,128,.2)">🦮 워커</button>
+      <button class="q-btn" data-f="펫호텔" onclick="filterMatch(this)" style="background:rgba(34,211,238,.12);color:#22d3ee;border:1px solid rgba(34,211,238,.2)">🏨 호텔</button>
       <button class="q-btn" data-f="호스트" onclick="filterMatch(this)" style="background:rgba(96,165,250,.12);color:var(--accent2);border:1px solid rgba(96,165,250,.2)">🏠 호스트</button>
       <button class="q-btn" data-f="그루밍" onclick="filterMatch(this)" style="background:rgba(244,114,182,.12);color:var(--accent3);border:1px solid rgba(244,114,182,.2)">✂️ 그루밍</button>
       <button class="q-btn" data-f="동물병원" onclick="filterMatch(this)" style="background:rgba(251,191,36,.12);color:var(--warm);border:1px solid rgba(251,191,36,.2)">🏥 병원</button>
@@ -401,7 +402,7 @@ function updateCount(){
 }
 
 map.on('load',()=>{
-  places.forEach(p=>{
+  places.forEach((p,pi)=>{
     const el=document.createElement('div');
     el.style.cssText=`width:38px;height:38px;border-radius:11px;background:${p.c}18;border:2px solid ${p.c};display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:transform .12s;box-shadow:0 3px 12px ${p.c}33;`;
     el.innerHTML=p.e;
@@ -412,7 +413,7 @@ map.on('load',()=>{
         <span class="pop-type" style="background:${p.c}22;color:${p.c};">${typeKr[p.t]}</span>
         <div class="pop-meta">📍 ${p.addr}</div><div class="pop-meta">${p.note}</div>
         <div class="pop-r">${p.r} (${p.rv})</div>
-        <button class="pop-btn" onclick='openBook(${JSON.stringify(JSON.stringify(p))})'>예약 · 연락하기 →</button>`);
+        <button class="pop-btn" onclick="openBookIdx(${pi})">예약 · 연락하기 →</button>`);
     const mk=new mapboxgl.Marker({element:el}).setLngLat(p.ll).setPopup(popup).addTo(map);
     markers.push({mk,type:p.t,el,place:p});
   });
@@ -426,12 +427,20 @@ function toggleF(btn,type){
 }
 
 // ═══ 내 위치 ═══
+let myLL=null;
+function distKm(a,b){
+  const R=6371,dLat=(b[1]-a[1])*Math.PI/180,dLng=(b[0]-a[0])*Math.PI/180;
+  const x=Math.sin(dLat/2)**2+Math.cos(a[1]*Math.PI/180)*Math.cos(b[1]*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
 function goMyLocation(){
   if(!navigator.geolocation){toast('위치 서비스를 지원하지 않는 브라우저예요');return;}
   const btn=document.getElementById('locBtn');btn.classList.add('locating');
   navigator.geolocation.getCurrentPosition(pos=>{
     btn.classList.remove('locating');
     const ll=[pos.coords.longitude,pos.coords.latitude];
+    myLL=ll;
+    renderMatch(); // 거리순 갱신
     if(myMarker)myMarker.remove();
     const el=document.createElement('div');
     el.style.cssText='width:20px;height:20px;border-radius:50%;background:#60a5fa;border:3px solid #fff;box-shadow:0 0 0 8px rgba(96,165,250,.25);';
@@ -510,6 +519,7 @@ const botReplies={
   'default':[['이웃보호자','🐾','좋은 이야기 감사해요!'],['펫메이트','💚','환영합니다! 좋은 하루 되세요 :)']],
 };
 let currentRoomName='강아지';
+let currentRoomDesc='강아지 보호자 2,143명 온라인';
 // localStorage에 채팅 저장
 function loadChat(room){
   try{const s=localStorage.getItem('pm_chat_'+room);if(s)return JSON.parse(s);}catch(e){}
@@ -550,6 +560,7 @@ function enterRoom(el,name,ico,color,desc){
   document.querySelectorAll('.room-btn,.age-btn').forEach(r=>r.classList.remove('active'));
   el.classList.add('active');
   currentRoomName=name;
+  currentRoomDesc=desc;
   document.getElementById('chatIco').textContent=ico;
   document.getElementById('chatIco').style.background=color+'1f';
   document.getElementById('chatName').textContent=name+' 채팅방';
@@ -571,7 +582,7 @@ function sendMsg(){
   setTimeout(()=>{
     chatMsgs.push({u,av,msg,t:nowT()});
     saveChat(currentRoomName,chatMsgs);renderChat();
-    document.getElementById('chatDesc').textContent=currentRoomName+' 보호자들의 채팅방';
+    document.getElementById('chatDesc').textContent=currentRoomDesc;
   },1500+Math.random()*1500);
 }
 
@@ -587,20 +598,24 @@ function filterMatch(btn){
 }
 function renderMatch(){
   const mg=document.getElementById('matchGrid');mg.innerHTML='';
-  const fmap={'도그워커':'도그워커','호스트':'호스트','그루밍':'그루밍','동물병원':'동물병원'};
-  matchData.filter(m=>!matchFilter||m.t===fmap[matchFilter]).forEach(m=>{
+  let list=matchData.filter(m=>!matchFilter||m.t===matchFilter);
+  if(myLL){ // 내 위치 있으면 거리순 정렬
+    list=list.map(m=>({...m,dist:distKm(myLL,m.raw.ll)})).sort((a,b)=>a.dist-b.dist);
+  }
+  list.forEach(m=>{
     const c=document.createElement('div');c.className='match-card';
+    const distBadge=m.dist!==undefined?`<span style="font-size:9px;color:var(--accent2);background:rgba(96,165,250,.1);padding:1px 6px;border-radius:10px;">📍 ${m.dist<1?(m.dist*1000).toFixed(0)+'m':m.dist.toFixed(1)+'km'}</span>`:'';
     c.innerHTML=`<div class="mc-type">${m.e} ${m.t}</div><h4>${m.name}</h4><p>${m.desc}</p>
-      <div class="mc-meta"><span class="mc-r">${m.r}</span>${m.v?'<span class="mc-v">✓ 인증</span>':''}<span class="mc-p">${m.p}</span></div>`;
-    c.onclick=()=>openBook(JSON.stringify(m.raw));
+      <div class="mc-meta"><span class="mc-r">${m.r}</span>${m.v?'<span class="mc-v">✓ 인증</span>':''}${distBadge}<span class="mc-p">${m.p}</span></div>`;
+    c.onclick=()=>openBook(m.raw);
     mg.appendChild(c);
   });
 }
 
 // ═══ BOOKING MODAL ═══
 let currentBooking=null;
-function openBook(json){
-  const p=typeof json==='string'?JSON.parse(json):json;
+function openBookIdx(i){openBook(places[i]);}
+function openBook(p){
   currentBooking=p;
   document.getElementById('bmName').textContent=p.e+' '+p.name;
   document.getElementById('bmType').textContent=typeKr[p.t]+' · 📍 '+p.addr;
@@ -645,7 +660,7 @@ function renderPosts(){
       <span class="p-act ${liked?'liked':''}" onclick="toggleLike(${i},this)">❤️ <span>${p.likes+(liked?1:0)}</span></span>
       <span class="p-act">💬 ${p.comments}</span>
       <span class="p-act">👁 ${p.views}</span>
-      <span class="p-act" style="margin-left:auto;" onclick="toast('링크가 복사됐어요 📋')">공유 ↗</span>
+      <span class="p-act" style="margin-left:auto;" onclick="sharePost('${esc(p.title).replace(/'/g,'')}')">공유 ↗</span>
     </div>`;
     pc.appendChild(d);
   });
@@ -671,6 +686,24 @@ function submitPost(){
   document.getElementById('writeModal').classList.remove('show');
   document.getElementById('wTitle').value='';document.getElementById('wBody').value='';
   toast('✏️ 글이 등록됐어요!');
+}
+
+// ═══ 공유 ═══
+function sharePost(title){
+  const url=location.href;
+  if(navigator.share){
+    navigator.share({title:'펫메이트 — '+title,url}).catch(()=>{});
+  }else{
+    navigator.clipboard.writeText(url+' — '+title).then(()=>toast('링크가 복사됐어요 📋')).catch(()=>toast('복사 실패'));
+  }
+}
+
+// ═══ iOS 키보드 대응 (fixed 레이아웃 보호) ═══
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize',()=>{
+    const kb=window.innerHeight-window.visualViewport.height;
+    document.querySelector('.bottom-nav').style.display=kb>150?'none':'flex';
+  });
 }
 
 // ═══ INIT ═══
